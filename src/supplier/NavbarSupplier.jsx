@@ -9,7 +9,8 @@ import { FaSearch } from "react-icons/fa";
 import avatar from '../data/avatar.jpg';
 import { Cart, Chat,Search, UserProfile } from '../components';
 import { useStateContext } from '../contexts/ContextProvider';
-
+import {AddProduct2} from '../supplier'
+import { MdOutlineAddCircleOutline } from "react-icons/md";
 const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
   <TooltipComponent content={title} position="BottomCenter">
     <button
@@ -56,8 +57,9 @@ const NavbarSupplier = () => {
       <NavButton title="Menu" customFunc={handleActiveMenu} color={currentColor} icon={<AiOutlineMenu />} />
       <div className="flex">
        
-      <NavButton title="Login" customFunc={() => handleClick('login')} color={currentColor} icon={<FaSearch />} />
-        <NavButton title="Search" customFunc={() => handleClick('search')} color={currentColor} icon={<FaSearch />} />
+      <NavButton title="Search" customFunc={() => handleClick('search')} color={currentColor} icon={<FaSearch />} />
+      <NavButton title="Add Product" customFunc={() => handleClick('cart')} color={currentColor} icon={<MdOutlineAddCircleOutline />} />
+        
         <TooltipComponent content="Profile" position="BottomCenter">
           <div
             className="flex items-center gap-2 cursor-pointer p-1 hover:bg-light-gray rounded-lg"
@@ -78,9 +80,9 @@ const NavbarSupplier = () => {
           </div>
         </TooltipComponent>
 
-       
+        {isClicked.cart && (<AddProduct2 />)}
         {isClicked.search && (<Search />)}
-        {/* {isClicked.notification && (<Login />)} */}
+        
         {isClicked.userProfile && (<UserProfile />)}
       </div>
     </div>

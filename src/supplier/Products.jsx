@@ -41,6 +41,8 @@ import {
   updateCustomers,
   deleteCustomers,
 } from "../Server";
+import SidebarSupplier from "./SidebarSupplier";
+import NavbarSupplier from "./NavbarSupplier";
 const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
   <TooltipComponent content={title} position="BottomCenter">
     <button
@@ -66,7 +68,7 @@ function editTemplate(args) {
     />
   );
 }
-const Customers = () => {
+const Products = () => {
   const {
     currentColor,
     activeMenu,
@@ -80,15 +82,13 @@ const Customers = () => {
   //const selectionsettings = { persistSelection: true };
   const toolbarOptions = ["Add", "Edit", "Delete"];
   //const editing = {  };
-  
+  const [data, setData] = useState([]);
   const editOptions = {
     allowEditing: true,
     allowAdding: true,
     allowDeleting: true,
   };
-
   const filterOption = { ignoreAccent: true, type: "menu" };
-  const [data, setData] = useState([]);
   useEffect(() => {
     getCustomers().then((data) => {
       setData(data);
@@ -113,11 +113,11 @@ const Customers = () => {
           ></div>
           {activeMenu ? (
             <div className="w-72 fixed sidebar dark:bg-secondary-dark-bg bg-white ">
-              <SidebarAdmin />
+              <SidebarSupplier />
             </div>
           ) : (
             <div className="w-0 dark:bg-secondary-dark-bg">
-              <SidebarAdmin />
+              <SidebarSupplier />
             </div>
           )}
           <div
@@ -128,26 +128,26 @@ const Customers = () => {
             }
           >
             <div className="fixed md:static bg-main-bg dark:bg-main-dark-bg navbar w-full ">
-              <NavbarAdmin />
+              <NavbarSupplier />
             </div>
           </div>
         </div>
         <div className="mt-6">
           <div className="flex flex-wrap lg:flex-nowrap justify-center bg-white">
             <div className="m-2  p-2 md:p-10  ml-40 mt-0 rounded-xl">
-              <Header title={"Customer"} />
+              <Header title={"Products"} />
              
               <GridComponent
                 dataSource={data2}
                 width="1250"
                 allowPaging
-                allowSorting
+                //allowSorting
                 allowFiltering={true}
                 pageSettings={{ pageCount: 5 }}
                 editSettings={editOptions}
                 toolbar={toolbarOptions}
-                dataSourceChanged={dataSourceChanged}
-                filterSettings={filterOption}
+                //dataSourceChanged={dataSourceChanged}
+                //filterSettings={filterOption}
               >
                 <ColumnsDirective>
                   <ColumnDirective
@@ -175,37 +175,14 @@ const Customers = () => {
             </div>
           </div>
          
-          {/* <h1>home  </h1>
-            </div>
-            
-          </div>
-          <div className="flex m-3 flex-wrap justify-center gap-1 items-center">
-           <h1>page</h1>
-          </div>
-        </div>
-
-        
-
-        <div className="flex gap-10 m-4 flex-wrap justify-center">
-          <h1>show</h1>
-          
-        </div>
-
-        <div className="flex flex-wrap justify-center">
-         <h1>the</h1>
-          </div>
-          <div className="w-400 bg-white dark:text-gray-200 dark:bg-secondary-dark-bg rounded-2xl p-6 m-3">
-            
-           <h1>result</h1>
-           
-             */}
+         
         </div>
       </div>
     </>
   );
 };
 
-export default Customers;
+export default Products;
 
 //const [customers, setCustomers] = useState([]);
 // const [loading, setloading] = useState(true);
@@ -240,3 +217,52 @@ export default Customers;
 //     </tr>
 //   );
 // });
+
+/*
+ <BoldLink href="/" >
+
+          <div>
+            <Header title="Products" category={<Link to="/addproduct" className="btn btn-primart float-end"><Button margin="10" color={currentColor} size="xl" position="right" borderRadius="50%" /> Add Products </Link>} />
+
+          </div>
+
+        </BoldLink>
+        <GridComponent
+          dataSource={productsData}
+          width="auto"
+          allowPaging
+          header={hed}
+          allowSorting
+          pageSettings={{ pageCount: 5 }}
+          editSettings={editing}
+          toolbar={toolbarOptions}
+        >
+          <ColumnsDirective>
+            
+            {productsGrid.map((item, index) => <ColumnDirective key={index} {...item} />)}
+          </ColumnsDirective>
+          <Inject services={[Search, Page]} />
+
+        </GridComponent>
+      </div>
+      <div className="m-2 md:m-10 mt-24 p-2 md:p-10 bg-white rounded-3xl">
+        <Header title="categories" />
+
+        <GridComponent
+          dataSource={categoriesDetails}
+          width="auto"
+          allowPaging
+          allowSorting
+          pageSettings={{ pageCount: 5 }}
+          editSettings={editing}
+          toolbar={toolbarOptions}
+        >
+          <ColumnsDirective>
+            
+            {productsGrid.map((item, index) => <ColumnDirective key={index} {...item} />)}
+          </ColumnsDirective>
+          <Inject services={[Search, Page]} />
+
+        </GridComponent>
+
+        */

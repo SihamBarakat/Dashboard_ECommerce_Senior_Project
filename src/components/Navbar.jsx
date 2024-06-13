@@ -1,13 +1,13 @@
-import React, { useEffect } from "react";
-
-import { Cart, Chat, Search, UserProfile } from ".";
-import { useStateContext } from "../contexts/ContextProvider";
-import { IoMdLogIn } from "react-icons/io";
-import { TooltipComponent } from '@syncfusion/ej2-react-popups';
-import Login from '../login/Login'
+import React, { useEffect } from 'react';
 import { AiOutlineMenu } from 'react-icons/ai';
+
+import { TooltipComponent } from '@syncfusion/ej2-react-popups';
+
 import avatar from '../data/avatar.jpg';
-import { MdKeyboardArrowDown } from 'react-icons/md';
+import { Cart, Chat, Notification, UserProfile } from '.';
+import { useStateContext } from '../contexts/ContextProvider';
+import Login from '../login/Login';
+import { IoMdLogIn } from "react-icons/io";
 const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
   <TooltipComponent content={title} position="BottomCenter">
     <button
@@ -24,25 +24,18 @@ const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
     </button>
   </TooltipComponent>
 );
+
 const Navbar = () => {
-  const {
-    currentColor,
-    activeMenu,
-    setActiveMenu,
-    handleClick,
-    isClicked,
-    setScreenSize,
-    screenSize,
-  } = useStateContext();
+  const { currentColor, activeMenu, setActiveMenu, handleClick, isClicked, setScreenSize, screenSize } = useStateContext();
 
   useEffect(() => {
     const handleResize = () => setScreenSize(window.innerWidth);
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
 
     handleResize();
 
-    return () => window.removeEventListener("resize", handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   useEffect(() => {
@@ -58,18 +51,15 @@ const Navbar = () => {
   return (
     <div className="flex justify-between p-2 md:ml-6 md:mr-6 relative">
 
-    <NavButton title="Menu" customFunc={handleActiveMenu} color={currentColor} icon={<AiOutlineMenu />} />
-    <div className="flex">
-     
-    <NavButton title="Login" customFunc={() => handleClick('login')} color={currentColor} icon={<IoMdLogIn />} />
+      <NavButton title="Menu" customFunc={handleActiveMenu} color={currentColor} icon={<AiOutlineMenu />} />
+      <div className="flex">
+        <NavButton title="Login" customFunc={() => handleClick('login')} color={currentColor} icon={<IoMdLogIn />} />
       
+        
+        {isClicked.login && (<Login />)}
       
-     
-      {isClicked.login && (<Login />)}
-      {/* {isClicked.notification && (<Login />)} */}
-      {isClicked.userProfile && (<UserProfile />)}
+      </div>
     </div>
-  </div>
   );
 };
 

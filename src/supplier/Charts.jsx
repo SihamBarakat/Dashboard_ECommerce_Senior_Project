@@ -1,119 +1,59 @@
 import React, { useEffect, useState } from "react";
+import { BsCurrencyDollar } from "react-icons/bs";
+import { GoDotFill } from "react-icons/go";
+import { IoIosMore } from "react-icons/io";
+import { DropDownListComponent } from "@syncfusion/ej2-react-dropdowns";
+import { Button } from "../components";
 import {
-  GridComponent,
-  ColumnsDirective,
-  ColumnDirective,
-  Page,
-  Search,
-  Selection,
-  Inject,
-  Edit,
-  Toolbar,
-  Sort,
-  Filter,
-  EditSettingsModel,
-  dataSourceChanged,
-} from "@syncfusion/ej2-react-grids";
-import axios from "axios";
+  Stacked,
+  Pie,
+  LineChart,
+  SparkLine,
+  NavbarSupplier,
+  SidebarSupplier,
+} from "../supplier";
 import {
-  customersData,
-  customersGrid,
-  datatest,
-  employeesData,
-  employeesGrid,
-  data2,
+  earningData,
+  medicalproBranding,
+  recentTransactions,
+  weeklyStats,
+  dropdownData,
+  SparklineAreaData,
+  ecomPieChartData,
 } from "../data/dummy";
-import { Header } from "../components";
-import { Link, json } from "react-router-dom";
-import { BsCurrencyDollar } from 'react-icons/bs';
-import { BsChatLeft } from "react-icons/bs";
 import { useStateContext } from "../contexts/ContextProvider";
-import { TooltipComponent } from "@syncfusion/ej2-react-popups";
-//import { Navbar, Sidebar } from "../components";
-import { NavbarAdmin, SidebarAdmin } from "../admin";
-import { Ajax, DataManager, UrlAdaptor } from "@syncfusion/ej2/data";
-//import {SubmitButton} from "./Style";
-import { MaskedTextBoxComponent } from "@syncfusion/ej2-react-inputs";
-import { MODE } from "baseui/button-group";
-import {
-  getCustomers,
-  addCustomers,
-  updateCustomers,
-  deleteCustomers,
-} from "../Server";
-import product9 from '../data/product9.jpg';
-
-import { GoDotFill    } from 'react-icons/go';
-import { IoIosMore } from 'react-icons/io';
-import { DropDownListComponent } from '@syncfusion/ej2-react-dropdowns';
-import { Button, Navbar, Sidebar,} from '../components'
-import { Stacked, Pie, LineChart, SparkLine } from '../supplier';
-import { earningData, medicalproBranding, recentTransactions, weeklyStats, dropdownData, SparklineAreaData, ecomPieChartData } from '../data/dummy';
-const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
-  <TooltipComponent content={title} position="BottomCenter">
-    <button
-      type="button"
-      onClick={() => customFunc()}
-      style={{ color }}
-      className="relative text-xl rounded-full p-3 hover:bg-light-gray"
-    >
-      <span
-        style={{ background: dotColor }}
-        className="absolute inline-flex rounded-full h-2 w-2 right-2 top-2"
-      />
-      {icon}
-    </button>
-  </TooltipComponent>
-);
-function editTemplate(args) {
-  return (
-    <MaskedTextBoxComponent
-      value={args.PhoneNumber}
-      mask="000-000-0000"
-      id="PhoneNumber"
-    />
-  );
-}
+import product9 from "../data/product9.jpg";
+import axios from "axios";
 const DropDown = ({ currentMode }) => (
   <div className="w-28 border-1 border-color px-2 py-1 rounded-md">
-    <DropDownListComponent id="time" fields={{ text: 'Time', value: 'Id' }} style={{ border: 'none', color: (currentMode === 'Dark') && 'white' }} value="1" dataSource={dropdownData} popupHeight="220px" popupWidth="120px" />
+    <DropDownListComponent
+      id="time"
+      fields={{ text: "Time", value: "Id" }}
+      style={{ border: "none", color: currentMode === "Dark" && "white" }}
+      value="1"
+      dataSource={dropdownData}
+      popupHeight="220px"
+      popupWidth="120px"
+    />
   </div>
 );
-const Admin = () => {
-  const {
-    currentColor,
-    activeMenu,
-    setActiveMenu,
-    currentMode,
-    handleClick,
-    isClicked,
-    setScreenSize,
-    screenSize,
-  } = useStateContext();
-  //const selectionsettings = { persistSelection: true };
-  const toolbarOptions = ["Add", "Edit", "Delete"];
-  //const editing = {  };
-  const [data, setData] = useState([]);
-  const editOptions = {
-    allowEditing: true,
-    allowAdding: true,
-    allowDeleting: true,
-  };
-  const filterOption = { ignoreAccent: true, type: "menu" };
+
+const Charts = () => {
+  const { currentColor, currentMode, activeMenu } = useStateContext();
+  const [earnings, setEarnings] = useState([]);
+
   useEffect(() => {
-    getCustomers().then((data) => {
-      setData(data);
-    });
+    const fetchEarnings = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/earnings");
+        setEarnings(response.data);
+      } catch (error) {
+        console.error("Error fetching earnings:", error);
+      }
+    };
+
+    fetchEarnings();
   }, []);
-  function dataSourceChanged(state) {
-    if (state.action === "add") {
-      addCustomers(state.data);
-    } else if (state.action === "edit") {
-      updateCustomers(state.data);
-    } else if (state.requestType === "delete") {
-      deleteCustomers(state.data[0].id);
-    }
-  }
   return (
     <>
       <div className={currentMode === "Dark" ? "dark" : ""}>
@@ -124,11 +64,11 @@ const Admin = () => {
           ></div>
           {activeMenu ? (
             <div className="w-72 fixed sidebar dark:bg-secondary-dark-bg bg-white ">
-              <SidebarAdmin />
+              <SidebarSupplier />
             </div>
           ) : (
             <div className="w-0 dark:bg-secondary-dark-bg">
-              <SidebarAdmin />
+              <SidebarSupplier />
             </div>
           )}
           <div
@@ -138,23 +78,23 @@ const Admin = () => {
                 : " dark:bg-main-dark-bg  w-full min-h-screen flex-2 "
             }
           >
-            <div className="fixed md:static bg-main-bg dark:bg-main-dark-bg navbar w-full ">
-              <NavbarAdmin />
-            </div>
+            {/* <div className="fixed md:static bg-main-bg dark:bg-main-dark-bg navbar w-full ">
+            <NavbarSupplier />
+          </div> */}
           </div>
         </div>
         <div className="mt-6 ">
-        <div className="flex justify-between items-center">
-          {/* <div className="App">
-            <h1>Data from Flask</h1>
-            <p>Name: {data.Supplier}</p>
-            <p>Age: {data.Earnings}</p>
-           
-          </div> */}
+          <div className="flex justify-between items-center">
+            {/* <div className="App">
+          <h1>Data from Flask</h1>
+          <p>Name: {data.Supplier}</p>
+          <p>Age: {data.Earnings}</p>
+         
+        </div> */}
             {/* <div>
-              <p className="font-bold text-gray-400">Earnings</p>
-              <p className="text-2xl">$63,448.78</p>
-            </div> */}
+            <p className="font-bold text-gray-400">Earnings</p>
+            <p className="text-2xl">$63,448.78</p>
+          </div> */}
             <button
               type="button"
               style={{ backgroundColor: currentColor }}
@@ -165,16 +105,19 @@ const Admin = () => {
           </div>
           <div className="mt-6">
             {/* <Button
-              color="white"
-              bgColor={currentColor}
-              text="Download"
-              borderRadius="10px"
-            /> */}
+            color="white"
+            bgColor={currentColor}
+            text="Download"
+            borderRadius="10px"
+          /> */}
           </div>
         </div>
         <div className="flex m-3 flex-wrap justify-center gap-1 items-center">
           {earningData.map((item) => (
-            <div key={item.title} className="bg-white h-44 dark:text-gray-200 dark:bg-secondary-dark-bg md:w-56  p-4 pt-9 rounded-2xl ">
+            <div
+              key={item.title}
+              className="bg-white h-44 dark:text-gray-200 dark:bg-secondary-dark-bg md:w-56  p-4 pt-9 rounded-2xl "
+            >
               <button
                 type="button"
                 style={{ color: item.iconColor, backgroundColor: item.iconBg }}
@@ -201,13 +144,13 @@ const Admin = () => {
             <div className="flex items-center gap-4">
               <p className="flex items-center gap-2 text-gray-600 hover:drop-shadow-xl">
                 <span>
-                  <GoDotFill    />
+                  <GoDotFill />
                 </span>
                 <span>Expense</span>
               </p>
               <p className="flex items-center gap-2 text-green-400 hover:drop-shadow-xl">
                 <span>
-                  <GoDotFill    />
+                  <GoDotFill />
                 </span>
                 <span>Budget</span>
               </p>
@@ -231,7 +174,15 @@ const Admin = () => {
               </div>
 
               <div className="mt-5">
-                <SparkLine currentColor={currentColor} id="line-sparkLine" type="Line" height="80px" width="250px" data={SparklineAreaData} color={currentColor} />
+                <SparkLine
+                  currentColor={currentColor}
+                  id="line-sparkLine"
+                  type="Line"
+                  height="80px"
+                  width="250px"
+                  data={SparklineAreaData}
+                  color={currentColor}
+                />
               </div>
               <div className="mt-10">
                 <Button
@@ -256,13 +207,23 @@ const Admin = () => {
               <p className="font-semibold text-white text-2xl">Earnings</p>
 
               <div>
-                <p className="text-2xl text-white font-semibold mt-8">$63,448.78</p>
+                <p className="text-2xl text-white font-semibold mt-8">
+                  $63,448.78
+                </p>
                 <p className="text-gray-200">Monthly revenue</p>
               </div>
             </div>
 
             <div className="mt-4">
-              <SparkLine currentColor={currentColor} id="column-sparkLine" height="100px" type="Column" data={SparklineAreaData} width="320" color="rgb(242, 252, 253)" />
+              <SparkLine
+                currentColor={currentColor}
+                id="column-sparkLine"
+                height="100px"
+                type="Column"
+                data={SparklineAreaData}
+                width="320"
+                color="rgb(242, 252, 253)"
+              />
             </div>
           </div>
 
@@ -273,7 +234,12 @@ const Admin = () => {
             </div>
 
             <div className="w-40">
-              <Pie id="pie-chart" data={ecomPieChartData} legendVisiblity={false} height="160px" />
+              <Pie
+                id="pie-chart"
+                data={ecomPieChartData}
+                legendVisiblity={false}
+                height="160px"
+              />
             </div>
           </div>
         </div>
@@ -336,14 +302,20 @@ const Admin = () => {
         <div className="md:w-400 bg-white dark:text-gray-200 dark:bg-secondary-dark-bg rounded-2xl p-6 m-3">
           <div className="flex justify-between">
             <p className="text-xl font-semibold">Weekly Stats</p>
-            <button type="button" className="text-xl font-semibold text-gray-500">
+            <button
+              type="button"
+              className="text-xl font-semibold text-gray-500"
+            >
               <IoIosMore />
             </button>
           </div>
 
           <div className="mt-10 ">
             {weeklyStats.map((item) => (
-              <div key={item.title} className="flex justify-between mt-4 w-full">
+              <div
+                key={item.title}
+                className="flex justify-between mt-4 w-full"
+              >
                 <div className="flex gap-4">
                   <button
                     type="button"
@@ -362,15 +334,25 @@ const Admin = () => {
               </div>
             ))}
             <div className="mt-4">
-              <SparkLine currentColor={currentColor} id="area-sparkLine" height="160px" type="Area" data={SparklineAreaData} width="320" color="rgb(242, 252, 253)" />
+              <SparkLine
+                currentColor={currentColor}
+                id="area-sparkLine"
+                height="160px"
+                type="Area"
+                data={SparklineAreaData}
+                width="320"
+                color="rgb(242, 252, 253)"
+              />
             </div>
           </div>
-
         </div>
         <div className="w-400 bg-white dark:text-gray-200 dark:bg-secondary-dark-bg rounded-2xl p-6 m-3">
           <div className="flex justify-between">
             <p className="text-xl font-semibold">MedicalPro Branding</p>
-            <button type="button" className="text-xl font-semibold text-gray-400">
+            <button
+              type="button"
+              className="text-xl font-semibold text-gray-400"
+            >
               <IoIosMore />
             </button>
           </div>
@@ -380,7 +362,10 @@ const Admin = () => {
 
           <div className="flex gap-4 border-b-1 border-color mt-6">
             {medicalproBranding.data.map((item) => (
-              <div key={item.title} className="border-r-1 border-color pr-4 pb-2">
+              <div
+                key={item.title}
+                className="border-r-1 border-color pr-4 pb-2"
+              >
                 <p className="text-xs text-gray-400">{item.title}</p>
                 <p className="text-sm">{item.desc}</p>
               </div>
@@ -405,7 +390,12 @@ const Admin = () => {
             <p className="text-md font-semibold mb-2">Leaders</p>
             <div className="flex gap-4">
               {medicalproBranding.leaders.map((item, index) => (
-                <img key={index} className="rounded-full w-8 h-8" src={item.image} alt="" />
+                <img
+                  key={index}
+                  className="rounded-full w-8 h-8"
+                  src={item.image}
+                  alt=""
+                />
               ))}
             </div>
           </div>
@@ -425,16 +415,15 @@ const Admin = () => {
         <div className="w-400 bg-white dark:text-gray-200 dark:bg-secondary-dark-bg rounded-2xl p-6 m-3">
           <div className="flex justify-between">
             <p className="text-xl font-semibold">Daily Activities</p>
-            <button type="button" className="text-xl font-semibold text-gray-500">
+            <button
+              type="button"
+              className="text-xl font-semibold text-gray-500"
+            >
               <IoIosMore />
             </button>
           </div>
           <div className="mt-10">
-            <img
-              className="md:w-96 h-50 "
-              src={product9}
-              alt=""
-            />
+            <img className="md:w-96 h-50 " src={product9} alt="" />
             <div className="mt-8">
               <p className="font-semibold text-lg">React 18 coming soon!</p>
               <p className="text-gray-400 ">By Johnathan Doe</p>
@@ -453,73 +442,9 @@ const Admin = () => {
             </div>
           </div>
         </div>
-          </div>
-
-         
-      
-      
+      </div>
     </>
   );
 };
 
-export default Admin;
- {/* <h1>home  </h1>
-            </div>
-            
-          </div>
-          <div className="flex m-3 flex-wrap justify-center gap-1 items-center">
-           <h1>page</h1>
-          </div>
-        </div>
-
-        
-
-        <div className="flex gap-10 m-4 flex-wrap justify-center">
-          <h1>show</h1>
-          
-        </div>
-
-        <div className="flex flex-wrap justify-center">
-         <h1>the</h1>
-          </div>
-          <div className="w-400 bg-white dark:text-gray-200 dark:bg-secondary-dark-bg rounded-2xl p-6 m-3">
-            
-           <h1>result</h1>
-           
-             */}
-
-
-
-//const [customers, setCustomers] = useState([]);
-// const [loading, setloading] = useState(true);
-// useEffect(() => {
-//   axios
-//     .get(`https://36bb-37-48-177-73.ngrok-free.app/Users/admin/customers`)
-//     .then((res) => {
-//       console.log(res);
-//       setCustomers(res.data.customers);
-//     });
-
-//   // return ()=>{
-
-//   // }
-// }, []);
-
-// const [isActive, setIsActive] = useState(false);
-
-// const handleToggle = () => {
-//   setIsActive(!isActive);
-// };
-
-// var customersDetails = "";
-// customersDetails = customers.map((item, index) => {
-//   return (
-//     <tr key={index}>
-//       <td>{item.id}</td>
-//       <td>{item.user}</td>
-//       <td>{item.phone_number}</td>
-
-//       {/* وبكمل الحقول يلي بدي ياهم من الداتا  */}
-//     </tr>
-//   );
-// });
+export default Charts;

@@ -27,6 +27,9 @@ import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { FaTruck } from "react-icons/fa";
 import { HiUserGroup } from "react-icons/hi";
 import { PiUsersThreeFill } from "react-icons/pi";
+import { TbDiscount } from "react-icons/tb";
+import { FaProductHunt } from 'react-icons/fa'; 
+import { FaChartLine } from "react-icons/fa";
 export const gridOrderImage = (props) => (
   <div>
     <img
@@ -93,6 +96,25 @@ export const links = [
         name: 'Admin',
         icon: <MdOutlineAdminPanelSettings  />,
       },
+      {
+        name: 'Supplier',
+        icon: <PiUsersThreeFill  />,
+      },
+    ],
+  },
+
+ 
+  
+];
+export const linksAdmin = [
+  {
+    title: 'Dashboard',
+    links: [
+      {
+        name: 'Admin',
+        icon: <MdOutlineAdminPanelSettings  />,
+      },
+      
     ],
   },
 
@@ -126,7 +148,37 @@ export const links = [
   },
   
 ];
+export const linksSupplier = [
+  {
+    title: 'Dashboard',
+    links: [
+      
+      {
+        name: 'Supplier',
+        icon: <PiUsersThreeFill  />,
+      },
+    ],
+  },
 
+  {
+    title: 'Pages',
+    links: [
+      {
+        name: 'Products',
+        icon: <FaProductHunt />,
+      }, 
+      {
+        name: 'Charts',
+        icon: <FaChartLine  />,
+      },
+      {
+        name: 'Categories',
+        icon: <TbDiscount   />,
+      },
+    ],
+  },
+  
+];
 export const cartData = [
   {
     
@@ -5508,4 +5560,87 @@ export const employeesGrid = [
     headerText: 'Employee ID',
     width: '125',
     textAlign: 'Center' },
+];
+export const data2 = [
+  {
+      "user": 1,
+      "brand_name": "shein",
+      "brand_location": "al-tal",
+      "commercial_recored": "hkjhkudfasid",
+      "is_approved": false
+    },
+{
+  "user": 2,
+  "brand_name": "shein",
+  "brand_location": "al-tal",
+  "commercial_recored": "hkjhkudfasid",
+  "is_approved": false
+},
+{
+  "user": 3,
+  "brand_name": "shein",
+  "brand_location": "al-tal",
+  "commercial_recored": "hkjhkudfasid",
+  "is_approved": false
+},
+{
+  "user": 4,
+  "brand_name": "shein",
+  "brand_location": "al-tal",
+  "commercial_recored": "hkjhkudfasid",
+  "is_approved": false
+},
+ ];
+
+
+export const productsData = [
+  {
+    ProductID:' 1',
+    Name: ' ',
+    description: ' ',
+    price: ' ',
+    sale_price: ' ',
+    category_id: ' ',
+    type_id:' ',
+    date_created:' ',
+    is_active:' ',
+  },
+  
+];
+export const productsGrid = [
+  { headerText: 'ProductID',
+    width: '120', },
+  { headerText: 'Name',
+    width: '100',
+    
+  },
+  { 
+    headerText: 'description',
+    width: '120',
+  },
+  { headerText: 'Price',
+    width: '110',
+   
+    },
+
+  {headerText: 'Sale Price',
+    width: '120',
+    format: 'yMd',
+     },
+
+  {
+    headerText: 'CategoryID',
+    width: '120',},
+  { 
+    headerText: 'TypeID',
+    width: '120',
+    textAlign: 'Center' },
+  { 
+    headerText: 'Date Created',
+    width: '130',
+     },
+  { 
+    headerText: 'Is Active',
+    width: '120',
+    },
 ];

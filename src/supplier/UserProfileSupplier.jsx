@@ -6,7 +6,7 @@ import { userProfileData } from '../data/dummy';
 import { useStateContext } from '../contexts/ContextProvider';
 import avatar from '../data/avatar.jpg';
 
-const UserProfile = () => {
+const UserProfileSupplier = () => {
   const { currentColor } = useStateContext();
 
   return (
@@ -52,17 +52,17 @@ const UserProfile = () => {
         ))}
       </div>
       <div className="mt-5">
-        {/* <Button
+        <Button
           color="white"
           bgColor={currentColor}
-          text="Logout"
+          text={<Link to='/'class="link" >Logout</Link>}
           borderRadius="10px"
           width="full"
-        /> */}
+        />
       </div>
     </div>
 
   );
 };
 
-export default UserProfile;
+export default UserProfileSupplier;

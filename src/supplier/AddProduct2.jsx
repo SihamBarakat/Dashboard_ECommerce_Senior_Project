@@ -2,12 +2,12 @@
 import React,{  useState, useEffect, useContext } from 'react';
 import { MdOutlineCancel } from 'react-icons/md';
 
-import { Button } from '.';
+import { Button } from '../components';
 import { chatData } from '../data/dummy';
 import { useStateContext } from '../contexts/ContextProvider';
 
-import { BoldLink, BoxContainer, FormContainer,  Input, MutedLink, SubmitButton,} from "./Style";
-import { Marginer } from "../components";
+import { BoldLink, BoxContainer, FormContainer,  Input, MutedLink, SubmitButton,} from "../components/Style";
+import { Marginer } from "../components/Marginer";
 import { Link } from "react-router-dom"
 import styled from "styled-components";
 //import CategoryList from'./CategoryList'

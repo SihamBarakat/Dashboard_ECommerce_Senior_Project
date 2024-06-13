@@ -66,7 +66,7 @@ function editTemplate(args) {
     />
   );
 }
-const Customers = () => {
+const Supplier = () => {
   const {
     currentColor,
     activeMenu,
@@ -175,68 +175,13 @@ const Customers = () => {
             </div>
           </div>
          
-          {/* <h1>home  </h1>
-            </div>
-            
-          </div>
-          <div className="flex m-3 flex-wrap justify-center gap-1 items-center">
-           <h1>page</h1>
-          </div>
-        </div>
-
-        
-
-        <div className="flex gap-10 m-4 flex-wrap justify-center">
-          <h1>show</h1>
           
-        </div>
-
-        <div className="flex flex-wrap justify-center">
-         <h1>the</h1>
-          </div>
-          <div className="w-400 bg-white dark:text-gray-200 dark:bg-secondary-dark-bg rounded-2xl p-6 m-3">
-            
-           <h1>result</h1>
-           
-             */}
         </div>
       </div>
     </>
   );
 };
 
-export default Customers;
+export default Supplier;
 
-//const [customers, setCustomers] = useState([]);
-// const [loading, setloading] = useState(true);
-// useEffect(() => {
-//   axios
-//     .get(`https://36bb-37-48-177-73.ngrok-free.app/Users/admin/customers`)
-//     .then((res) => {
-//       console.log(res);
-//       setCustomers(res.data.customers);
-//     });
-
-//   // return ()=>{
-
-//   // }
-// }, []);
-
-// const [isActive, setIsActive] = useState(false);
-
-// const handleToggle = () => {
-//   setIsActive(!isActive);
-// };
-
-// var customersDetails = "";
-// customersDetails = customers.map((item, index) => {
-//   return (
-//     <tr key={index}>
-//       <td>{item.id}</td>
-//       <td>{item.user}</td>
-//       <td>{item.phone_number}</td>
-
-//       {/* وبكمل الحقول يلي بدي ياهم من الداتا  */}
-//     </tr>
-//   );
-// });
+//

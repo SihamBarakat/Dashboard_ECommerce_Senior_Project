@@ -56,7 +56,7 @@ const NavbarAdmin = () => {
       <NavButton title="Menu" customFunc={handleActiveMenu} color={currentColor} icon={<AiOutlineMenu />} />
       <div className="flex">
        
-      <NavButton title="Login" customFunc={() => handleClick('login')} color={currentColor} icon={<FaSearch />} />
+   
         <NavButton title="Search" customFunc={() => handleClick('search')} color={currentColor} icon={<FaSearch />} />
         <TooltipComponent content="Profile" position="BottomCenter">
           <div
@@ -80,7 +80,7 @@ const NavbarAdmin = () => {
 
        
         {isClicked.search && (<Search />)}
-        {/* {isClicked.notification && (<Login />)} */}
+        
         {isClicked.userProfile && (<UserProfile />)}
       </div>
     </div>
