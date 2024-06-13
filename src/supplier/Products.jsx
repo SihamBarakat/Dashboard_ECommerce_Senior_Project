@@ -40,7 +40,7 @@ import {
   addCustomers,
   updateCustomers,
   deleteCustomers,
-} from "../Server";
+} from "../Connect";
 import SidebarSupplier from "./SidebarSupplier";
 import NavbarSupplier from "./NavbarSupplier";
 const NavButton = ({ title, customFunc, icon, color, dotColor }) => (

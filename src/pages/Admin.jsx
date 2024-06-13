@@ -40,7 +40,7 @@ import {
   addCustomers,
   updateCustomers,
   deleteCustomers,
-} from "../Server";
+} from "../Connect";
 import product9 from '../data/product9.jpg';
 
 import { GoDotFill    } from 'react-icons/go';

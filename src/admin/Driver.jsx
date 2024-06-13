@@ -40,7 +40,7 @@ import {
   addCustomers,
   updateCustomers,
   deleteCustomers,
-} from "../Server";
+} from "../Connect";
 const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
   <TooltipComponent content={title} position="BottomCenter">
     <button
