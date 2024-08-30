@@ -1,62 +1,55 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   GridComponent,
   ColumnsDirective,
   ColumnDirective,
   Page,
-  Search,
-  Selection,
   Inject,
   Edit,
-  Toolbar,
-  Sort,
-  Filter,
-  EditSettingsModel,
-  dataSourceChanged,
 } from "@syncfusion/ej2-react-grids";
 import axios from "axios";
-import {
-  customersData,
-  customersGrid,
-  datatest,
-  employeesData,
-  employeesGrid,
-  data2,
-} from "../data/dummy";
-import { Header } from "../components";
+import StatusTemplatepro2 from "./status/StatusTemplateActive";
+import { Header, NavbarSub, NavbarSubCat } from "../components";
 import { Link, json } from "react-router-dom";
 
 import { BsChatLeft } from "react-icons/bs";
 import { useStateContext } from "../contexts/ContextProvider";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import { Navbar, Sidebar } from "../components";
-import { NavbarAdmin, SidebarAdmin } from "../admin";
+import {
+  AddCategory,
+  EditCategory,
+  DeleteCategory,
+  NavbarAdmin,
+  SidebarAdmin,
+} from "../admin";
+
 import { Ajax, DataManager, UrlAdaptor } from "@syncfusion/ej2/data";
-//import {SubmitButton} from "./Style";
 import { MaskedTextBoxComponent } from "@syncfusion/ej2-react-inputs";
 import { MODE } from "baseui/button-group";
-import {
-  getCategories,
-  addCustomers,
-  updateCustomers,
-  deleteCustomers,
-} from "../Connect";
-const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
-  <TooltipComponent content={title} position="BottomCenter">
-    <button
-      type="button"
-      onClick={() => customFunc()}
-      style={{ color }}
-      className="relative text-xl rounded-full p-3 hover:bg-light-gray"
-    >
-      <span
-        style={{ background: dotColor }}
-        className="absolute inline-flex rounded-full h-2 w-2 right-2 top-2"
-      />
-      {icon}
-    </button>
-  </TooltipComponent>
-);
+import StatusTemplateLeaf from './status/StatusTemplateLeaf'
+
+
+const API_URL =
+"https://donkey-casual-python.ngrok-free.app/catalog/category";
+
+const fetchCategories = async () => {
+  try {
+    const response = await fetch(API_URL, {
+      method: "get",
+      headers: {
+        "Content-Type": "application/json",
+        // 'ngrok-skip-browser-warning': 'true',
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => console.log(data));
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    throw error;
+  }
+};
+
 function editTemplate(args) {
   return (
     <MaskedTextBoxComponent
@@ -66,41 +59,43 @@ function editTemplate(args) {
     />
   );
 }
-const Customers = () => {
-  const {
-    currentColor,
-    activeMenu,
-    setActiveMenu,
-    currentMode,
-    handleClick,
-    isClicked,
-    setScreenSize,
-    screenSize,
-  } = useStateContext();
-  //const selectionsettings = { persistSelection: true };
-  const toolbarOptions = ["Add", "Edit", "Delete"];
-  //const editing = {  };
-  const [data, setData] = useState([]);
+const Categories = () => {
+  const { activeMenu, setActiveMenu, currentMode } = useStateContext();
+
   const editOptions = {
     allowEditing: true,
     allowAdding: true,
     allowDeleting: true,
   };
+
   const filterOption = { ignoreAccent: true, type: "menu" };
+
+
+  const [categoriess, setCategoriess] = useState([]);
+
   useEffect(() => {
-    getCategories().then((data) => {
-      setData(data);
-    });
+    
+    const fetchData = async () => {
+      try {
+        const response = await fetch(API_URL, {
+          method: "get",
+          headers: {
+            //'Content-Type': 'application/json',
+            "ngrok-skip-browser-warning": "true",
+          },
+        });
+        const data = await response.json();
+        setCategoriess(data);
+        console.log(data); // This will log the entire response object for debugging
+        // Assuming your API returns an array of items directly
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
   }, []);
-  function dataSourceChanged(state) {
-    if (state.action === "add") {
-      addCustomers(state.data);
-    } else if (state.action === "edit") {
-      updateCustomers(state.data);
-    } else if (state.requestType === "delete") {
-      deleteCustomers(state.data[0].id);
-    }
-  }
+
   return (
     <>
       <div className={currentMode === "Dark" ? "dark" : ""}>
@@ -130,48 +125,86 @@ const Customers = () => {
             </div>
           </div>
         </div>
+
         <div className="mt-6">
           <div className="flex flex-wrap lg:flex-nowrap justify-center bg-white">
             <div className="m-2  p-2 md:p-10  ml-40 mt-0 rounded-xl">
-              <Header title={"Categories"} />
-             
+              <NavbarSubCat
+                title2={"Categories"}
+                handle={"Add Category"}
+                category2={<AddCategory />}
+                handle3={"Edit Category"}
+                category3={<EditCategory />}
+                category5={<DeleteCategory />}
+                handle4={"Delete Category"}
+              />
+
               <GridComponent
-                dataSource={data}
+                dataSource={categoriess}
                 width="1250"
                 allowPaging
-                //allowSorting
+                allowSorting
                 allowFiltering={true}
                 pageSettings={{ pageCount: 5 }}
-                editSettings={editOptions}
-                toolbar={toolbarOptions}
-                //dataSourceChanged={dataSourceChanged}
-                //filterSettings={filterOption}
+                filterSettings={filterOption}
+
               >
                 <ColumnsDirective>
                   <ColumnDirective
-                    headerText="name"
-                    field="name "
+                    headerText="Id"
+                    field="id"
+                    width="150"
+                    textAlign="Center"
+                    //isPrimaryKey={true}
+                    type="number"
+                  />
+                  <ColumnDirective
+                    headerText="Name"
+                    field="name"
                     width="150"
                     textAlign="Center"
                   />
                   <ColumnDirective
-                    headerText="parent"
-                    field="parent"
+                    headerText="Slug"
+                    field="slug"
                     width="150"
                     textAlign="Center"
                   />
-                 
+                  <ColumnDirective
+                    headerText="Parent"
+                    field="parent "
+                    width="150"
+                    textAlign="Center"
+                  />
+                  <ColumnDirective
+                    headerText="Is Leaf"
+                    field="is_leaf"
+                    width="150"
+                    textAlign="Center"
+                    template={StatusTemplateLeaf}
+                  />
+                  <ColumnDirective
+                    headerText="Is Active"
+                    field="is_active"
+                    width="150"
+                    textAlign="Center"
+                    template={StatusTemplatepro2}
+                  />
+                  <ColumnDirective
+                    headerText="Image Url"
+                    field="image_url"
+                    width="150"
+                    textAlign="Center"
+                  />
                 </ColumnsDirective>
-                <Inject services={[Search, Page, Edit, Toolbar, Filter]} />
+                <Inject services={[Page]} />
               </GridComponent>
             </div>
           </div>
-         
-          
         </div>
       </div>
     </>
   );
 };
 
-export default Customers;
+export default Categories;

@@ -1,62 +1,56 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   GridComponent,
   ColumnsDirective,
   ColumnDirective,
   Page,
-  Search,
-  Selection,
   Inject,
   Edit,
-  Toolbar,
-  Sort,
-  Filter,
-  EditSettingsModel,
-  dataSourceChanged,
 } from "@syncfusion/ej2-react-grids";
 import axios from "axios";
-import {
-  customersData,
-  customersGrid,
-  datatest,
-  employeesData,
-  employeesGrid,
-  data2,
-} from "../data/dummy";
-import { Header } from "../components";
+
+import { Header, Sub, NavbarSubAdm, NavbarSubDriv } from "../components";
 import { Link, json } from "react-router-dom";
 
 import { BsChatLeft } from "react-icons/bs";
 import { useStateContext } from "../contexts/ContextProvider";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import { Navbar, Sidebar } from "../components";
-import { NavbarAdmin, SidebarAdmin } from "../admin";
+import {
+  AddCategory,
+  EditCategory,
+  DeleteCategory,
+  NavbarAdmin,
+  SidebarAdmin,
+  AddDriver,
+  EditDriver,
+  DeleteDriver,
+} from "../admin";
+import StatusTemplateApprove from "./status/StatusTemplateApprove";
+import StatusTemplateOnline from './status/StatusTemplateOnline'
 import { Ajax, DataManager, UrlAdaptor } from "@syncfusion/ej2/data";
-//import {SubmitButton} from "./Style";
 import { MaskedTextBoxComponent } from "@syncfusion/ej2-react-inputs";
 import { MODE } from "baseui/button-group";
-import {
-  getCustomers,
-  addCustomers,
-  updateCustomers,
-  deleteCustomers,
-} from "../Connect";
-const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
-  <TooltipComponent content={title} position="BottomCenter">
-    <button
-      type="button"
-      onClick={() => customFunc()}
-      style={{ color }}
-      className="relative text-xl rounded-full p-3 hover:bg-light-gray"
-    >
-      <span
-        style={{ background: dotColor }}
-        className="absolute inline-flex rounded-full h-2 w-2 right-2 top-2"
-      />
-      {icon}
-    </button>
-  </TooltipComponent>
-);
+
+const API_URL = "https://donkey-casual-python.ngrok-free.app/driver/all";
+
+const fetchCategories = async () => {
+  try {
+    const response = await fetch(API_URL, {
+      method: "get",
+      headers: {
+        "Content-Type": "application/json",
+        // 'ngrok-skip-browser-warning': 'true',
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => console.log(data));
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    throw error;
+  }
+};
+
 function editTemplate(args) {
   return (
     <MaskedTextBoxComponent
@@ -67,40 +61,36 @@ function editTemplate(args) {
   );
 }
 const Driver = () => {
-  const {
-    currentColor,
-    activeMenu,
-    setActiveMenu,
-    currentMode,
-    handleClick,
-    isClicked,
-    setScreenSize,
-    screenSize,
-  } = useStateContext();
-  //const selectionsettings = { persistSelection: true };
-  const toolbarOptions = ["Add", "Edit", "Delete"];
-  //const editing = {  };
-  const [data, setData] = useState([]);
-  const editOptions = {
-    allowEditing: true,
-    allowAdding: true,
-    allowDeleting: true,
-  };
-  const filterOption = { ignoreAccent: true, type: "menu" };
+  const { activeMenu, setActiveMenu, currentMode } = useStateContext();
+
+  const API_URL = "https://donkey-casual-python.ngrok-free.app/driver/all";
+
+  const [drivers, setDrivers] = useState([]);
+
   useEffect(() => {
-    getCustomers().then((data) => {
-      setData(data);
-    });
+    const fetchData = async () => {
+      try {
+        const response = await fetch(API_URL, {
+          method: "get",
+          headers: {
+            //'Content-Type': 'application/json',
+            "ngrok-skip-browser-warning": "true",
+          },
+        });
+        const data = await response.json();
+        setDrivers(data);
+        console.log(data); // This will log the entire response object for debugging
+        // Assuming your API returns an array of items directly
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
   }, []);
-  function dataSourceChanged(state) {
-    if (state.action === "add") {
-      addCustomers(state.data);
-    } else if (state.action === "edit") {
-      updateCustomers(state.data);
-    } else if (state.requestType === "delete") {
-      deleteCustomers(state.data[0].id);
-    }
-  }
+  const ImageTemplate = (props) => {
+    return <img src={props.vehicle_image} alt="Vehicle" style={{ width: '50px', height: '50px' }} />;
+  };
   return (
     <>
       <div className={currentMode === "Dark" ? "dark" : ""}>
@@ -130,73 +120,121 @@ const Driver = () => {
             </div>
           </div>
         </div>
+
         <div className="mt-6">
           <div className="flex flex-wrap lg:flex-nowrap justify-center bg-white">
             <div className="m-2  p-2 md:p-10  ml-40 mt-0 rounded-xl">
-              <Header title={"Driver"} />
-             
+              <NavbarSubDriv
+                title2={"Driver"}
+              
+              />
+
               <GridComponent
-                dataSource={data2}
-                width="1250"
+                dataSource={drivers}
+                width="1400"
                 allowPaging
-                //allowSorting
-                allowFiltering={true}
+                allowSorting
                 pageSettings={{ pageCount: 5 }}
-                editSettings={editOptions}
-                toolbar={toolbarOptions}
-                //dataSourceChanged={dataSourceChanged}
-                //filterSettings={filterOption}
               >
                 <ColumnsDirective>
                   <ColumnDirective
                     headerText="Id"
-                    field="Id "
-                    width="150"
+                    field="id"
+                    width="100"
+                    textAlign="Center"
+                    type="number"
+                  />
+
+                  <ColumnDirective
+                    headerText="Email"
+                    field="user.email"
+                    width="100"
+                    textAlign="Center"
+                    type="number"
+                  />
+
+                  <ColumnDirective
+                    headerText="First Name"
+                    field="user.first_name"
+                    width="100"
+                    textAlign="Center"
+                    type="number"
+                  />
+                  <ColumnDirective
+                    headerText="Last Name"
+                    field="user.last_name"
+                    width="120"
                     textAlign="Center"
                   />
                   <ColumnDirective
-                    headerText="user"
-                    field="User"
-                    width="150"
+                    headerText="Username"
+                    field="user.username"
+                    width="100"
+                    textAlign="Center"
+                  />
+
+                  <ColumnDirective
+                    headerText="Latitude"
+                    field="latitude"
+                    width="100"
+                    textAlign="Center"
+                  />
+
+                  <ColumnDirective
+                    headerText="Longitude"
+                    field="longitude"
+                    width="100"
+                    textAlign="Center"
+                  />
+
+                  <ColumnDirective
+                    headerText="Phone Number"
+                    field="phone_number"
+                    width="120"
+                    textAlign="Center"
+                  />
+
+                  <ColumnDirective
+                    headerText="Vehicle Type"
+                    field="vehicle_type"
+                    width="100"
+                    textAlign="Center"
+                  />
+
+                  <ColumnDirective
+                    headerText="Vehicle Plate"
+                    field="vehicle_plate"
+                    width="100"
                     textAlign="Center"
                   />
                   <ColumnDirective
-                    headerText="PhoneNumber"
-                    field="PhoneNumber"
-                    width="150"
+                    headerText="Vehicle Image"
+                    field="vehicle_image"
+                    width="120"
                     textAlign="Center"
-                    editTemplate={editTemplate}
+                    template={ImageTemplate}
+                  />
+                  <ColumnDirective
+                    headerText="Is Approved"
+                    field="is_approved"
+                    width="120"
+                    textAlign="Center"
+                    type="boolean"
+                    template={StatusTemplateApprove}
+                  />
+                  <ColumnDirective
+                    headerText="Is Online"
+                    field="is_online"
+                    width="120"
+                    textAlign="Center"
+                    
+                    template={StatusTemplateOnline}
                   />
                 </ColumnsDirective>
-                <Inject services={[Search, Page, Edit, Toolbar, Filter]} />
+                <Inject services={[Page]} />
               </GridComponent>
             </div>
           </div>
-         
-          {/* <h1>home  </h1>
-            </div>
-            
-          </div>
-          <div className="flex m-3 flex-wrap justify-center gap-1 items-center">
-           <h1>page</h1>
-          </div>
-        </div>
-
-        
-
-        <div className="flex gap-10 m-4 flex-wrap justify-center">
-          <h1>show</h1>
-          
-        </div>
-
-        <div className="flex flex-wrap justify-center">
-         <h1>the</h1>
-          </div>
-          <div className="w-400 bg-white dark:text-gray-200 dark:bg-secondary-dark-bg rounded-2xl p-6 m-3">
-            
-           <h1>result</h1>
-           
-             */}
         </div>
       </div>
     </>
@@ -204,4 +242,3 @@ const Driver = () => {
 };
 
 export default Driver;
-

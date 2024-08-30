@@ -1,16 +1,15 @@
-import React, { useEffect } from 'react';
-import { AiOutlineMenu } from 'react-icons/ai';
-import { FiShoppingCart } from 'react-icons/fi';
-import { RiChat1Line } from "react-icons/ri";
-import { RiNotification3Line } from 'react-icons/ri';
-import { MdKeyboardArrowDown } from 'react-icons/md';
-import { TooltipComponent } from '@syncfusion/ej2-react-popups';
+import React, { useEffect } from "react";
+import { AiOutlineMenu } from "react-icons/ai";
+import { Link, useNavigate } from "react-router-dom";
+import { MdKeyboardArrowDown, MdDelete ,MdEdit } from "react-icons/md";
+import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import { FaSearch } from "react-icons/fa";
-import avatar from '../data/avatar.jpg';
-import { Cart, Chat,Search, UserProfile } from '../components';
-import { useStateContext } from '../contexts/ContextProvider';
-import {AddProduct2} from '../supplier'
-import { MdOutlineAddCircleOutline } from "react-icons/md";
+import avatar from "../data/avatar.jpg";
+import { Search, UserProfile } from "../components";
+import { useStateContext } from "../contexts/ContextProvider";
+import { DeleteAccount, UserProfileSupplier } from "../supplier";
+import EditInfo from "./EditInfo";
+import { CgProfile } from "react-icons/cg";
 const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
   <TooltipComponent content={title} position="BottomCenter">
     <button
@@ -29,16 +28,24 @@ const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
 );
 
 const NavbarSupplier = () => {
-  const { currentColor, activeMenu, setActiveMenu, handleClick, isClicked, setScreenSize, screenSize } = useStateContext();
-
+  const {
+    currentColor,
+    activeMenu,
+    setActiveMenu,
+    handleClick,
+    isClicked,
+    setScreenSize,
+    screenSize,
+  } = useStateContext();
+  const navigate = useNavigate();
   useEffect(() => {
     const handleResize = () => setScreenSize(window.innerWidth);
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     handleResize();
 
-    return () => window.removeEventListener('resize', handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
@@ -50,20 +57,65 @@ const NavbarSupplier = () => {
   }, [screenSize]);
 
   const handleActiveMenu = () => setActiveMenu(!activeMenu);
+  const deleteAccount = async () => {
+    const accountId = '123'; // Replace with the actual account ID
 
+    try {
+      const response = await fetch(`/api/account/${accountId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data.message); // Account deleted successfully
+        // Optionally redirect the user or update the UI
+      } else {
+        console.error('Failed to delete the account');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+  const handleClick2 = (action) => {
+    if (action === "search") {
+      navigate("/search"); // Navigate to the add page
+    }
+    // Handle other actions if necessary
+  };
   return (
     <div className="flex justify-between p-2 md:ml-6 md:mr-6 relative">
-
-      <NavButton title="Menu" customFunc={handleActiveMenu} color={currentColor} icon={<AiOutlineMenu />} />
+      <NavButton
+        title="Menu"
+        customFunc={handleActiveMenu}
+        color={currentColor}
+        icon={<AiOutlineMenu />}
+      />
       <div className="flex">
-       
-      <NavButton title="Search" customFunc={() => handleClick('search')} color={currentColor} icon={<FaSearch />} />
-      <NavButton title="Add Product" customFunc={() => handleClick('cart')} color={currentColor} icon={<MdOutlineAddCircleOutline />} />
-        
-        <TooltipComponent content="Profile" position="BottomCenter">
+        <NavButton
+          title="Search"
+          customFunc={() => handleClick2("search")}
+          color={currentColor}
+          icon={<FaSearch />}
+        />
+         {/* <NavButton
+          title="Edit Information"
+          customFunc={() => handleClick("editInfo")}
+          color={currentColor}
+          icon={<MdEdit />}
+        /> */}
+           <NavButton title="Profile" customFunc={() => handleClick('profile')} color={currentColor} icon={<CgProfile />} />
+        {/* <NavButton
+          title="Delete Account"
+          customFunc={() => handleClick("delete")}
+          color={currentColor}
+          icon={<MdDelete />}
+        /> */}
+        {/* <NavButton title="Add Product" customFunc={() => handleClick('cart')} color={currentColor} icon={<MdOutlineAddCircleOutline />} /> */}
+
+        {/* <TooltipComponent content="Profile" position="BottomCenter">
           <div
             className="flex items-center gap-2 cursor-pointer p-1 hover:bg-light-gray rounded-lg"
-            onClick={() => handleClick('userProfile')}
+            onClick={() => handleClick("userProfile")}
           >
             <img
               className="rounded-full w-8 h-8"
@@ -71,19 +123,21 @@ const NavbarSupplier = () => {
               alt="user-profile"
             />
             <p>
-              <span className="text-gray-400 text-14">Hi,</span>{' '}
+              <span className="text-gray-400 text-14">Hi,</span>{" "}
               <span className="text-gray-400 font-bold ml-1 text-14">
                 Michael
               </span>
             </p>
             <MdKeyboardArrowDown className="text-gray-400 text-14" />
           </div>
-        </TooltipComponent>
+        </TooltipComponent> */}
 
-        {isClicked.cart && (<AddProduct2 />)}
-        {isClicked.search && (<Search />)}
+
+        {isClicked.search && <Search />}
+        {isClicked.editInfo && <EditInfo />}
+        {/* {isClicked.delete && deleteAccount} */}
+        {isClicked.profile && <UserProfileSupplier />}
         
-        {isClicked.userProfile && (<UserProfile />)}
       </div>
     </div>
   );

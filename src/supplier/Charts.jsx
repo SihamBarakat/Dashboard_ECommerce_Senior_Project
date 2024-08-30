@@ -41,11 +41,30 @@ const DropDown = ({ currentMode }) => (
 const Charts = () => {
   const { currentColor, currentMode, activeMenu } = useStateContext();
   const [earnings, setEarnings] = useState([]);
+  const [userData, setUserData] = useState([]);
+  const [earningsData, setEarningsData] = useState([]);
 
+  useEffect(() => {
+    fetch('http://127.0.0.1:5000/api/earnings')
+      .then(response => response.json())
+      .then(data => setEarningsData(data))
+      .catch(error => console.error('Error fetching data:', error));
+  }, []);
+  // useEffect(() => {
+  //   // Fetch JSON data from an API
+  //   fetch('http://127.0.0.1:5000/')
+  //     .then(response => response.json())
+  //     .then(data => setUserData(data))
+  //     .catch(error => console.error('Error fetching data:', error));
+  // }, []);
+
+  // if (!userData) {
+  //   return <div>Loading...</div>;
+  // }
   useEffect(() => {
     const fetchEarnings = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/earnings");
+        const response = await axios.get("http://127.0.0.1:5000/earnings");
         setEarnings(response.data);
       } catch (error) {
         console.error("Error fetching earnings:", error);
@@ -113,27 +132,11 @@ const Charts = () => {
           </div>
         </div>
         <div className="flex m-3 flex-wrap justify-center gap-1 items-center">
-          {earningData.map((item) => (
-            <div
-              key={item.title}
-              className="bg-white h-44 dark:text-gray-200 dark:bg-secondary-dark-bg md:w-56  p-4 pt-9 rounded-2xl "
-            >
-              <button
-                type="button"
-                style={{ color: item.iconColor, backgroundColor: item.iconBg }}
-                className="text-2xl opacity-0.9 rounded-full  p-4 hover:drop-shadow-xl"
-              >
-                {item.icon}
-              </button>
-              <p className="mt-3">
-                <span className="text-lg font-semibold">{item.amount}</span>
-                <span className={`text-sm text-${item.pcColor} ml-2`}>
-                  {item.percentage}
-                </span>
-              </p>
-              <p className="text-sm text-gray-400  mt-1">{item.title}</p>
-            </div>
-          ))}
+
+
+
+       
+         
         </div>
       </div>
 

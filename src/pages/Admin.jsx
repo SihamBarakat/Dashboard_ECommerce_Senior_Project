@@ -10,7 +10,7 @@ import {
   Edit,
   Toolbar,
   Sort,
-  Filter,
+
   EditSettingsModel,
   dataSourceChanged,
 } from "@syncfusion/ej2-react-grids";
@@ -155,13 +155,13 @@ const Admin = () => {
               <p className="font-bold text-gray-400">Earnings</p>
               <p className="text-2xl">$63,448.78</p>
             </div> */}
-            <button
+            {/* <button
               type="button"
               style={{ backgroundColor: currentColor }}
               className="text-2xl opacity-0.9 text-white hover:drop-shadow-xl rounded-full  p-4"
             >
               <BsCurrencyDollar />
-            </button>
+            </button> */}
           </div>
           <div className="mt-6">
             {/* <Button

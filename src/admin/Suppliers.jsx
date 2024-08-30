@@ -1,114 +1,64 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState ,useNavigate} from "react";
 import {
   GridComponent,
   ColumnsDirective,
   ColumnDirective,
   Page,
   Search,
-  Selection,
   Inject,
   Edit,
-  Toolbar,
-  Sort,
-  Filter,
-  EditSettingsModel,
+ 
   dataSourceChanged,
 } from "@syncfusion/ej2-react-grids";
-import axios from "axios";
-import {
-  customersData,
-  customersGrid,
-  datatest,
-  employeesData,
-  employeesGrid,
-  data2,
-} from "../data/dummy";
-import { Header } from "../components";
-import { Link, json } from "react-router-dom";
-
-import { BsChatLeft } from "react-icons/bs";
+import { NavbarSubAdm } from "../components";
 import { useStateContext } from "../contexts/ContextProvider";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
-import { Navbar, Sidebar } from "../components";
-import { NavbarAdmin, SidebarAdmin } from "../admin";
-import { Ajax, DataManager, UrlAdaptor } from "@syncfusion/ej2/data";
-//import {SubmitButton} from "./Style";
-import { MaskedTextBoxComponent } from "@syncfusion/ej2-react-inputs";
-import { MODE } from "baseui/button-group";
-import {
-  getSuppliers,
-  addSuppliers,
-  updateCustomers,
-  deleteCustomers,
-} from "../Connect";
-const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
-  <TooltipComponent content={title} position="BottomCenter">
-    <button
-      type="button"
-      onClick={() => customFunc()}
-      style={{ color }}
-      className="relative text-xl rounded-full p-3 hover:bg-light-gray"
-    >
-      <span
-        style={{ background: dotColor }}
-        className="absolute inline-flex rounded-full h-2 w-2 right-2 top-2"
-      />
-      {icon}
-    </button>
-  </TooltipComponent>
-);
-// function editTemplate(args) {
-//   return (
-//     <MaskedTextBoxComponent
-//       value={args.PhoneNumber}
-//       mask="000-000-0000"
-//       id="PhoneNumber"
-//     />
-//   );
-// }
+import { NavbarAdmin, SidebarAdmin,ApproveSupplier } from "../admin";
+
+import StatusTemplate from './suppliers/StatusTemplate';
+import{ AddSuppliers ,EditSuppliers,DeleteSuppliers}from "../admin";
+import FilterSup from "./suppliers/FilterSup";
 const Supplier = () => {
   const {
-    currentColor,
     activeMenu,
-    setActiveMenu,
-    currentMode,
-    handleClick,
     isClicked,
-    setScreenSize,
-    screenSize,
+    currentMode,
   } = useStateContext();
-  //const selectionsettings = { persistSelection: true };
-  const toolbarOptions = ["Add", "Edit", "Delete"];
-  //const editing = {  };
-  const [data, setData] = useState([]);
-  const editOptions = {
-    allowEditing: true,
-    allowAdding: true,
-    allowDeleting: true,
-  };
+
   const filterOption = { ignoreAccent: true, type: "menu" };
+  const API_URL =
+  "https://donkey-casual-python.ngrok-free.app/supplier/all";
+  const [supplierss, setSupplierss] = useState([]);
+ 
   useEffect(() => {
-    getSuppliers()
-    
-      // return ()=>{
-    
-      // }
-    }, []);
-  
-  // useEffect(() => {
-  //   getSuppliers().then((data) => {
-  //     setData(data);
-  //   });
-  // }, []);
-  function dataSourceChanged(state) {
-    if (state.action === "add") {
-      addSuppliers(state.data);
-    } else if (state.action === "edit") {
-      updateCustomers(state.data);
-    } else if (state.requestType === "delete") {
-      deleteCustomers(state.data[0].id);
-    }
-  }
+    const fetchData = async () => {
+      try {
+        const response = await fetch(API_URL, {
+          method: "get",
+          headers: {
+            //'Content-Type': 'application/json',
+            "ngrok-skip-browser-warning": "true",
+          },
+        })
+        const data = await response.json();
+        setSupplierss(data);
+        console.log(data); 
+     
+        
+        
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+  const data = [
+    { id: 1, name: 'John Doe', is_approved: 1 },
+    { id: 2, name: 'Jane Smith', is_approved: 0 },
+    { id: 3, name: 'Samuel Green', is_approved: 1 },
+  ];
+
   return (
     <>
       <div className={currentMode === "Dark" ? "dark" : ""}>
@@ -141,91 +91,99 @@ const Supplier = () => {
         <div className="mt-6">
           <div className="flex flex-wrap lg:flex-nowrap justify-center bg-white">
             <div className="m-2  p-2 md:p-10  ml-40 mt-0 rounded-xl">
-              <Header title={"Supplier"} />
-             
+            <NavbarSubAdm
+                title2={"Suppliers"}
+              //
+                category5={<DeleteSuppliers />}
+                handle4={"Delete Supplier"}
+                category6={<FilterSup/>}
+              />
+
               <GridComponent
-                dataSource={data}
-                width="1250"
+                dataSource={supplierss}
+               //  dataSource={data}
+                width="1500"
                 allowPaging
-                //allowSorting
                 allowFiltering={true}
                 pageSettings={{ pageCount: 5 }}
-                editSettings={editOptions}
-                toolbar={toolbarOptions}
                 dataSourceChanged={dataSourceChanged}
-
                 filterSettings={filterOption}
               >
                 <ColumnsDirective>
+                <ColumnDirective
+                    field="id"
+                    headerText="Id"
+                    width="120"
+                    textAlign="Center"
+                     type="number"
+                  />
                   <ColumnDirective
-                    headerText="user"
-                    field="user "
+                    field="user.email"
+                    headerText="email"
+                    width="200"
+                    textAlign="Center"
+                  />
+                  <ColumnDirective
+                    field="user.first_name"
+                    headerText="First Name"
                     width="150"
-                     type="int"
+                    textAlign="Center"
+                  />
+                  <ColumnDirective
+                    field="user.last_name"
+                    headerText="Last Name"
+                    width="120"
+                    textAlign="Center"
+                  />
+                  <ColumnDirective
+                    field="user.username"
+                    headerText="User Name"
+                    width="120"
+                    textAlign="Center"
+                  />
 
-                    textAlign="Center"
-                  />
                   <ColumnDirective
-                    headerText="brand_name"
-                    field="brand_name"
-                    width="150"
-                     type="string"
-                    textAlign="Center"
-                  />
-                  <ColumnDirective
-                    headerText="brand_location"
-                    field="brand_location"
+                    field="phone_number"
+                    headerText="Phone Number"
                     width="150"
                     textAlign="Center"
-                    
                   />
                   <ColumnDirective
-                    headerText="commercial_recored"
+                    headerText="Latitude"
+                    field="latitude"
+                    width="150"
+                    textAlign="Center"
+                      type="number"
+                  />
+                    <ColumnDirective
+                    headerText="Longitude"
+                    field="longitude"
+                    width="150"
+                    textAlign="Center"
+                      type="number"
+                  />
+                  <ColumnDirective
+                    headerText="Commercial Recored"
                     field="commercial_recored"
                     width="150"
                     textAlign="Center"
-                    type="string"
-                   
                   />
-                 
+
                   <ColumnDirective
-                    headerText=" is_approved"
-                    field=" is_approved"
+                    field="is_approved"
+                    headerText="Is Approved"
                     width="150"
+                   template={StatusTemplate} 
                     textAlign="Center"
                     type="boolean"
-                   
                   />
                 </ColumnsDirective>
-                <Inject services={[Search, Page, Edit, Toolbar, Filter]} />
+                <Inject services={[Search, Page, Edit]} />
               </GridComponent>
             </div>
           </div>
-         
-          {/* <h1>home  </h1>
-            </div>
-            
-          </div>
-          <div className="flex m-3 flex-wrap justify-center gap-1 items-center">
-           <h1>page</h1>
-          </div>
-        </div>
 
-        
-
-        <div className="flex gap-10 m-4 flex-wrap justify-center">
-          <h1>show</h1>
-          
-        </div>
-
-        <div className="flex flex-wrap justify-center">
-         <h1>the</h1>
-          </div>
-          <div className="w-400 bg-white dark:text-gray-200 dark:bg-secondary-dark-bg rounded-2xl p-6 m-3">
-            
-           <h1>result</h1>
-           
-             */}
+          {isClicked.userProfile && (<ApproveSupplier />)}
         </div>
       </div>
     </>

@@ -10,22 +10,14 @@ import {
   Edit,
   Toolbar,
   Sort,
-  Filter,
+
   EditSettingsModel,
   dataSourceChanged,
 } from "@syncfusion/ej2-react-grids";
-import axios from "axios";
-import {
-  customersData,
-  customersGrid,
-  datatest,
-  employeesData,
-  employeesGrid,
-  data2,
-} from "../data/dummy";
-import { Header } from "../components";
-import { Link, json } from "react-router-dom";
 
+import { Header, NavbarSub, Sub } from "../components";
+import { Link, json } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { BsChatLeft } from "react-icons/bs";
 import { useStateContext } from "../contexts/ContextProvider";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
@@ -43,66 +35,74 @@ import {
 } from "../Connect";
 import SidebarSupplier from "./SidebarSupplier";
 import NavbarSupplier from "./NavbarSupplier";
-const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
-  <TooltipComponent content={title} position="BottomCenter">
-    <button
-      type="button"
-      onClick={() => customFunc()}
-      style={{ color }}
-      className="relative text-xl rounded-full p-3 hover:bg-light-gray"
-    >
-      <span
-        style={{ background: dotColor }}
-        className="absolute inline-flex rounded-full h-2 w-2 right-2 top-2"
-      />
-      {icon}
-    </button>
-  </TooltipComponent>
-);
-function editTemplate(args) {
-  return (
-    <MaskedTextBoxComponent
-      value={args.PhoneNumber}
-      mask="000-000-0000"
-      id="PhoneNumber"
-    />
-  );
-}
+import AddProduct2 from "./products/AddProduct2";
+import EditQuantity from "./products/EditProduct";
+import AddProduct from "./AddProduct";
+//import StatusTemplateProd from "./products/StatusTemplateProd";
+import { MdKeyboardArrowDown, MdDelete, MdEdit } from "react-icons/md";
+import AddProduct3 from "./AddProduct3";
+import AddProduct4 from "./AddProduct4";
+import NavbarSubPro from "../components/NavbarSubPro";
+import AddProduct5 from "./AddProduct5";
+import EditProduct from "./products/EditProduct";
+import DeleteProducts from "./products/DeleteProducts";
+import { TbListDetails } from "react-icons/tb";
+import ProductsDetails2 from "./products/ProductsDetails2";
+import ProductsDetails from "./products/ProductsDetails";
 const Products = () => {
-  const {
-    currentColor,
-    activeMenu,
-    setActiveMenu,
-    currentMode,
-    handleClick,
-    isClicked,
-    setScreenSize,
-    screenSize,
-  } = useStateContext();
-  //const selectionsettings = { persistSelection: true };
-  const toolbarOptions = ["Add", "Edit", "Delete"];
-  //const editing = {  };
-  const [data, setData] = useState([]);
-  const editOptions = {
-    allowEditing: true,
-    allowAdding: true,
-    allowDeleting: true,
-  };
-  const filterOption = { ignoreAccent: true, type: "menu" };
+  const data = [
+    { id: 1, name: "John Doe", details: null },
+    { id: 2, name: "Jane Smith", is_approved: 0 },
+    { id: 3, name: "Samuel Green", is_approved: 1 },
+  ];
+
+  const { activeMenu, setActiveMenu, currentMode } = useStateContext();
+  const API_URL =
+    "https://donkey-casual-python.ngrok-free.app/catalog/supplier/products/";
+  const [productss, setProductss] = useState([]);
   useEffect(() => {
-    getCustomers().then((data) => {
-      setData(data);
-    });
+    const fetchData = async () => {
+      try {
+        const response = await fetch(API_URL, {
+          method: "get",
+          headers: {
+            //'Content-Type': 'application/json',
+            "ngrok-skip-browser-warning": "true",
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI0ODcxODEyLCJpYXQiOjE3MTYyMzE4MTIsImp0aSI6IjRhOTg3ZGFiZWRlNzQ3M2E4MDM0ODAwMWJjMjU5NWI0IiwidXNlcl9pZCI6Mn0.VqSIa4ar6CuNQvWdeT8pRcRvINfmTNyqJVsfB4XZXUI",
+          },
+        });
+        const data = await response.json();
+        setProductss(data);
+        console.log(data); // This will log the entire response object for debugging
+        console.log(data.product_detail);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
   }, []);
-  function dataSourceChanged(state) {
-    if (state.action === "add") {
-      addCustomers(state.data);
-    } else if (state.action === "edit") {
-      updateCustomers(state.data);
-    } else if (state.requestType === "delete") {
-      deleteCustomers(state.data[0].id);
-    }
-  }
+const slug ='hello';
+  const navigate = useNavigate();
+  // const handleRowClick = (args) => {
+  //   const { slug } = args.data;
+  //   navigate(`/product/${slug}`);
+  // };
+  const handleProductClick = (slug) => {
+    // Navigate to the product details page with the product slug
+    navigate(`/productsdetails`);
+  };
+  const StatusTemplateProd = (slug) => {
+    return (
+      <div>
+           <button onClick={() => handleProductClick(slug)}> <TbListDetails  /> </button>
+          {/* <button onClick={() => handleDelete(props)}>
+              <MdDelete /> Delete
+          </button> */}
+      </div>
+    );
+  };
   return (
     <>
       <div className={currentMode === "Dark" ? "dark" : ""}>
@@ -135,47 +135,78 @@ const Products = () => {
         <div className="mt-6">
           <div className="flex flex-wrap lg:flex-nowrap justify-center bg-white">
             <div className="m-2  p-2 md:p-10  ml-40 mt-0 rounded-xl">
-              <Header title={"Products"} />
-             
+              <NavbarSubPro
+                title2={"Products"}
+                handle={"Add Products"}
+                handle2={"Show Product Details"}
+                category2={<AddProduct5 />}
+                handle3={"Edit Products"}
+                category3={<EditProduct />}
+                handle4={"Delete Products"}
+                category5={<DeleteProducts />}
+                category6={<ProductsDetails/>}
+              />
               <GridComponent
-                dataSource={data2}
-                width="1250"
+                dataSource={productss}
+                // dataSource={data}
+                width="1500"
                 allowPaging
-                //allowSorting
-                allowFiltering={true}
+               // rowSelected={handleRowClick}
                 pageSettings={{ pageCount: 5 }}
-                editSettings={editOptions}
-                toolbar={toolbarOptions}
-                //dataSourceChanged={dataSourceChanged}
-                //filterSettings={filterOption}
               >
                 <ColumnsDirective>
                   <ColumnDirective
                     headerText="Id"
-                    field="Id "
+                    field="id"
+                    width="150"
+                    textAlign="Center"
+                    type="number"
+                  />
+                  <ColumnDirective
+                    headerText="Name"
+                    field="name"
+                    width="150"
+                    textAlign="Center"
+                  />
+                 
+                  <ColumnDirective
+                    headerText="Main Price"
+                    field="main_price"
                     width="150"
                     textAlign="Center"
                   />
                   <ColumnDirective
-                    headerText="user"
-                    field="User"
+                    headerText="Main Sale Price"
+                    field="main_sale_price"
                     width="150"
                     textAlign="Center"
                   />
                   <ColumnDirective
-                    headerText="PhoneNumber"
-                    field="PhoneNumber"
+                    headerText="Average Rating"
+                    field="average_rating"
                     width="150"
                     textAlign="Center"
-                    editTemplate={editTemplate}
+                    type="number"
                   />
+                  <ColumnDirective
+                    headerText="Reviews Count"
+                    field="reviews_count"
+                    width="150"
+                    textAlign="Center"
+                    type="number"
+                  />
+                  <ColumnDirective
+                    headerText="Main Image"
+                    field="main_image"
+                    width="150"
+                    textAlign="Center"
+                  />
+                
                 </ColumnsDirective>
-                <Inject services={[Search, Page, Edit, Toolbar, Filter]} />
+                <Inject services={[Search, Page, Edit, Toolbar]} />
               </GridComponent>
             </div>
           </div>
-         
-         
         </div>
       </div>
     </>

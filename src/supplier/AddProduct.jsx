@@ -1,425 +1,487 @@
+import React, { useState, useEffect, useContext, Fragment } from "react";
+import { MdOutlineCancel } from "react-icons/md";
 
-import React,{  useState, useEffect, useContext } from 'react';
-import { MdOutlineCancel } from 'react-icons/md';
+import { Button } from "../components";
+import { chatData } from "../data/dummy";
+import { useStateContext } from "../contexts/ContextProvider";
 
-import { Button } from '.';
-import { chatData } from '../data/dummy';
-import { useStateContext } from '../contexts/ContextProvider';
-
-import { BoldLink, BoxContainer, FormContainer,  Input, MutedLink, SubmitButton,} from "../components";
-import { Marginer } from "../components/Style";
-import { Link } from "react-router-dom"
+import {
+  BoldLink,
+  BoxContainer,
+  FormContainer,
+  Input,
+  MutedLink,
+  SubmitButton,
+} from "../components/Style";
+import { Marginer } from "../components/Marginer";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 //import CategoryList from'./CategoryList'
+import { MdOutlineAddCircleOutline } from "react-icons/md";
+import { TooltipComponent } from "@syncfusion/ej2-react-popups";
+import { MdEdit } from "react-icons/md";
+//import UserProfile from './UserProfile'
+import axios from "axios";
 const AddProduct = () => {
-  const { currentColor } = useStateContext();
-  const [selectedColors, setSelectedColors] = useState([]);
-  const [selectedImages, setSelectedImages] = useState([]);
-  const style1=styled.input`
- width: 100%;
- height: 42px;
- outline: none;
- border: 1px solid rgba(200, 200, 200, 0.3);
- padding: 0px 10px;
- border-bottom: 1.4px solid transparent;
- transition: all 200ms ease-in-out;
- font-size: 13px;
+  const API_URL =
+    "https://donkey-casual-python.ngrok-free.app/catalog/category";
+  const API_Type =
+    "https://donkey-casual-python.ngrok-free.app/catalog/product_type";
 
- &::placeholder {
-   color: #333;
- }
+  const [categories, setCategories] = useState([]);  //cat
+  const [sub1Categories, setSub1Categories] = useState([]); //subcat1
+  const [sub2Categories, setSub2Categories] = useState([]);  //subcat2
+  const [sub3Categories, setSub3Categories] = useState([]);  //subcat2
+  const [sub4Categories, setSub4Categories] = useState([]);  //subcat2
+  const [sub5Categories, setSub5Categories] = useState([]);  //subcat2
+  const [type, setType] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null); //select1
 
- &:not(:last-of-type) {
-   border-bottom: 1.5px solid rgba(200, 200, 200, 0.4);
- }
-
- &:focus {
-   outline: none;
-   border-bottom: 2px solid rgb(241, 196, 15);
- }
-`;
-  const handleColorSelect = (color) => {
-    if (selectedColors.includes(color)) {
-      setSelectedColors(selectedColors.filter((c) => c !== color));
-    } else {
-      setSelectedColors([...selectedColors, color]);
-    }
-  };
-  const handleImageSelect = (event) => {
-    const images = event.target.files;
-    const selectedImageList = Array.from(images);
-    setSelectedImages(selectedImageList);
-  };
-  const [value,setValue]= useState('');
-  const option=[
-    {label:"Red",value:1},
-    {label:"Green",value:2},
-    {label:"Yellow",value:3},
-    {label:"Blue",value:4},
-    {label:"Black",value:5},
-  ]
-  const subcat=[
-    {label:"personal",value:1},
-    {label:"gaming",value:2},
-    
-  ]
-  const category=[
-    {name:"elcetronics",
-    states:{
-      name:"laptop",
-      category3:["gamming","pc"]
-    },
-  },
-    {name:"Clothes",
-    states:{
-      name:"man",
-      category3:["tshirt","jaket"]
-    },
-  },
-    {name:"Shose"},
-   
-  ]
+  const [selectedSub1Category, setSelectedSub1Category] = useState(null);
   
-  function handleSelect(event){
-    setValue(event.target.value)
-  }
+  const [selectedSub2Category, setSelectedSub2Category] = useState(null);
+  const [selectedSub3Category, setSelectedSub3Category] = useState(null); 
+  const [selectedsub4Category, setSelectedSub4Category] = useState(null); 
+  const [selectedtype, setSelectedType] = useState(null);
+  const data2  = [
+    {
+      name: "elcetronics",
+      states: {
+        name: "laptop",
+        category3: ["gamming", "pc"],
+      },
+    },
+    {
+      name: "Clothes",
+      states: {
+        name: "man",
+        category3: ["tshirt", "jaket"],
+      },
+    },
+    { name: "Shose" },
+  ];
 
-  //const [category1 ,setCategory1] =useState('category1');
-  //const [state ,setState] =useState('category2');
-  //const [category3 ,setCategory3] =useState('category3');
-  //const [states,setStates]=useState([]);
-  // const changeCategory1=(event)=>{
-  //   setCategory1(event.target.value);
-  //   setStates(category1.find(cat=>cat.name === event.target.value).states)
-
-
-  // }
-  // const changeState=(event)=>{
-  //   setState(event.target.value);
-
-  // }
-  const [selectedFiles, setSelectedFiles] = useState([]);
-
-  const handleFileChange = (event) => {
-    const files = Array.from(event.target.files);
-    setSelectedFiles(files);
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Handle the form submission, e.g., uploading files to a server
-    console.log(selectedFiles);
-  };
-
- 
-const [values,setValues]=useState([])
-const [options,setOptions]=useState([])
-//// const [showInputs, setShowInputs] = useState(false);
-// useEffect(()=>{
-//   fetch("api").then((data)=>data.json()).then((val)=>setValue(val))
-// },[])
-const [showInputs, setShowInputs] = useState(true);
-  const [inputVisibility, setInputVisibility] = useState([]);
-
-  // Fetch data from the API when the component mounts
   useEffect(() => {
-    fetch('https://api.example.com/input-visibility') // Replace with your API endpoint
-      .then(response => response.json())
-      .then(data => setInputVisibility(data))
-      .catch(error => console.error('Error fetching data:', error));
+    // Fetch categories
+    fetch("https://donkey-casual-python.ngrok-free.app/catalog/category", {
+      method: "get",
+      headers: {
+        //'Content-Type': 'application/json',
+        "ngrok-skip-browser-warning": "true",
+        Authorization:
+          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI0ODcxODEyLCJpYXQiOjE3MTYyMzE4MTIsImp0aSI6IjRhOTg3ZGFiZWRlNzQ3M2E4MDM0ODAwMWJjMjU5NWI0IiwidXNlcl9pZCI6Mn0.VqSIa4ar6CuNQvWdeT8pRcRvINfmTNyqJVsfB4XZXUI",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => setCategories(data));
   }, []);
-  const [selectedValue, setSelectedValue] = useState('');
-  const [inputCount, setInputCount] = useState(0);
-  
-    const [selectedOption, setSelectedOption] = useState('');
-  
-    const handleChange = (event) => {
-      setSelectedOption(event.target.value);
-    }
-  // Handle dropdown selection
-  const handleSelectChange = (event) => {
-  const value = event.target.value;
-    setSelectedValue(value);
 
-    // Determine the number of input boxes based on the selected value
-    if (value === 'elcetronics') {
-      setInputCount(1);
-    } else if (value === 'cat22') {
-      setInputCount(2);
-    } else if (value === 'cat32') {
-      setInputCount(3);
+  const handleCategoryChange = (event) => {
+    const selectedId = event.target.value;
+    const selectedCat = categories.find((cat) => cat.id == selectedId);
+    setSelectedCategory(selectedCat);
+
+    if (selectedCat && !selectedCat.is_leaf) {
+      // Fetch subcategories
+      fetch(`${API_URL}/${selectedCat.slug}`, {
+        method: "get",
+        headers: {
+          //'Content-Type': 'application/json',
+          "ngrok-skip-browser-warning": "true",
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI0ODcxODEyLCJpYXQiOjE3MTYyMzE4MTIsImp0aSI6IjRhOTg3ZGFiZWRlNzQ3M2E4MDM0ODAwMWJjMjU5NWI0IiwidXNlcl9pZCI6Mn0.VqSIa4ar6CuNQvWdeT8pRcRvINfmTNyqJVsfB4XZXUI",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => setSub1Categories(data));
     } else {
-      setInputCount(0);
+      setSub1Categories([]);
     }
   };
-console.log(values,"values")
+  const handleSub1CategoryChange = (event) => {
+    const selectedSub1Id = event.target.value;
+    const selectedSub1Cat = sub1Categories.find((cat) => cat.id == selectedSub1Id);
+    setSelectedSub1Category(selectedSub1Cat);
+
+    if (selectedSub1Cat && !selectedSub1Cat.is_leaf) {
+      // Fetch subcategories
+      fetch(`${API_URL}/${selectedSub1Cat.slug}`, {
+        method: "get",
+        headers: {
+          //'Content-Type': 'application/json',
+          "ngrok-skip-browser-warning": "true",
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI0ODcxODEyLCJpYXQiOjE3MTYyMzE4MTIsImp0aSI6IjRhOTg3ZGFiZWRlNzQ3M2E4MDM0ODAwMWJjMjU5NWI0IiwidXNlcl9pZCI6Mn0.VqSIa4ar6CuNQvWdeT8pRcRvINfmTNyqJVsfB4XZXUI",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => setSub2Categories(data));
+    } else {
+      setSub2Categories([]);
+    }
+  };
+  const handleSub2CategoryChange = (event) => {
+    const selectedSub2Id = event.target.value;
+    const selectedSub2Cat = sub2Categories.find((cat) => cat.id == selectedSub2Id);
+    setSelectedSub2Category(selectedSub2Cat);
+
+    if (selectedSub2Cat && !selectedSub2Cat.is_leaf) {
+      // Fetch subcategories
+      fetch(`https://donkey-casual-python.ngrok-free.app/catalog/product_type/${selectedSub2Cat.slug}`, {
+        method: "get",
+        headers: {
+          //'Content-Type': 'application/json',
+          "ngrok-skip-browser-warning": "true",
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI0ODcxODEyLCJpYXQiOjE3MTYyMzE4MTIsImp0aSI6IjRhOTg3ZGFiZWRlNzQ3M2E4MDM0ODAwMWJjMjU5NWI0IiwidXNlcl9pZCI6Mn0.VqSIa4ar6CuNQvWdeT8pRcRvINfmTNyqJVsfB4XZXUI",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => setSub3Categories(data));
+    } else {
+      setSub3Categories([]);
+    }
+  };
+  const handleSub3CategoryChange = (event) => {
+    const selectedSub3Id = event.target.value;
+    const selectedSub3Cat = sub3Categories.find((cat) => cat.id == selectedSub3Id);
+    setSelectedSub3Category(selectedSub3Cat);
+
+    if (selectedSub3Cat && !selectedSub3Cat.is_leaf) {
+      // Fetch subcategories
+      fetch(`https://donkey-casual-python.ngrok-free.app/catalog/category/${selectedSub3Cat.slug}`, {
+        method: "get",
+        headers: {
+          //'Content-Type': 'application/json',
+          "ngrok-skip-browser-warning": "true",
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI0ODcxODEyLCJpYXQiOjE3MTYyMzE4MTIsImp0aSI6IjRhOTg3ZGFiZWRlNzQ3M2E4MDM0ODAwMWJjMjU5NWI0IiwidXNlcl9pZCI6Mn0.VqSIa4ar6CuNQvWdeT8pRcRvINfmTNyqJVsfB4XZXUI",
+        },
+      })
+      
+        .then((response) => response.json())
+        .then((data) => {setSub4Categories(data)
+          console.log(data.name)
+        })
+        
+    } else {
+      setSub4Categories([]);
+    }
+  };
+  const handleSub4CategoryChange = (event) => {
+    const selectedSub4Id = event.target.value;
+    const selectedSub4Cat = sub4Categories.find((cat) => cat.id == selectedSub4Id);
+    setSelectedSub4Category(selectedSub4Cat);
+
+    if (selectedSub4Cat && !selectedSub4Cat.is_leaf) {
+      // Fetch subcategories
+      fetch(`https://donkey-casual-python.ngrok-free.app/catalog/category/${selectedSub4Cat.slug}`, {
+        method: "get",
+        headers: {
+          //'Content-Type': 'application/json',
+          "ngrok-skip-browser-warning": "true",
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI0ODcxODEyLCJpYXQiOjE3MTYyMzE4MTIsImp0aSI6IjRhOTg3ZGFiZWRlNzQ3M2E4MDM0ODAwMWJjMjU5NWI0IiwidXNlcl9pZCI6Mn0.VqSIa4ar6CuNQvWdeT8pRcRvINfmTNyqJVsfB4XZXUI",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {setSub5Categories(data);
+          console.log(data)}
+        );
+       
+    } else {
+      setSub5Categories([]);
+    }
+  };
+  const handleType = (event) => {
+    const typeId = event.target.value;
+    const selectedtype = sub1Categories.find((cat) => cat.id == typeId);
+    setSelectedSub1Category(selectedtype);
+   
+    
+    setSelectedType(selectedtype);
+
+    if (selectedtype) {
+      // Fetch subcategories
+      fetch(`https://donkey-casual-python.ngrok-free.app/catalog/product_type/${selectedtype.slug}`, {
+        method: "get",
+        headers: {
+          //'Content-Type': 'application/json',
+          "ngrok-skip-browser-warning": "true",
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI0ODcxODEyLCJpYXQiOjE3MTYyMzE4MTIsImp0aSI6IjRhOTg3ZGFiZWRlNzQ3M2E4MDM0ODAwMWJjMjU5NWI0IiwidXNlcl9pZCI6Mn0.VqSIa4ar6CuNQvWdeT8pRcRvINfmTNyqJVsfB4XZXUI",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => setType(data));
+    } else {
+      setType([]);
+    }
+  };
+  // const handleCategoryType1 = (event) => {
+  //   const selectedSubId = event.target.value;
+  //   const selectedSubCat = subsubCategories.find(
+  //     (cat) => cat.id == selectedSubId
+  //   );
+  //   setSelectedSubCategory(selectedSubCat);
+
+  //   if (selectedSubCat && !selectedSubCat.is_leaf) {
+  //     // Fetch subcategories
+  //     fetch(`${API_Type}/camera`, {
+  //       method: "get",
+  //       headers: {
+  //         //'Content-Type': 'application/json',
+  //         "ngrok-skip-browser-warning": "true",
+  //         Authorization:
+  //           "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI0ODcxODEyLCJpYXQiOjE3MTYyMzE4MTIsImp0aSI6IjRhOTg3ZGFiZWRlNzQ3M2E4MDM0ODAwMWJjMjU5NWI0IiwidXNlcl9pZCI6Mn0.VqSIa4ar6CuNQvWdeT8pRcRvINfmTNyqJVsfB4XZXUI",
+  //       },
+  //     })
+  //       .then((response) => response.json())
+  //       .then((data) => setSubSubCategories(data));
+  //   } else {
+  //     setSubSubCategories([]);
+  //   }
+  // };
   return (
     <div className="nav-item absolute right-5 md:right-40 top-16 bg-white dark:bg-[#42464D] p-8 rounded-lg w-96">
       <div className="flex justify-between items-center">
         <div className="flex gap-3">
-          <p className="font-semibold text-lg dark:text-gray-200">Add Product</p>
+          <p className="font-semibold text-lg dark:text-gray-200">
+            Add Product
+          </p>
         </div>
-        <Button icon={<MdOutlineCancel />} color="rgb(153, 171, 180)" bgHoverColor="light-gray" size="2xl" borderRadius="50%" />
+        <Button
+          icon={<MdOutlineCancel />}
+          color="rgb(153, 171, 180)"
+          bgHoverColor="light-gray"
+          size="2xl"
+          borderRadius="50%"
+        />
       </div>
       <div className="mt-6">
         <BoxContainer>
-              <FormContainer >
-                <Input type="text" placeholder="Name" required/>
-                <Input type="text" placeholder="Description"required />
-                <Input type="text" placeholder="Price"required />
-                {/*categories*/}
-                {/* <select on onChange={(e)=>setOptions(e.target.value)} placeholder="Category">
-                    {values.map((opts,i)=><option>{opts.name}</option>)}
-                    </select>
-                  <h1>{options}</h1> */}
-                  {/* Sub Category option 1 */}
-                   {/* <div>
-                    <button onClick={() => setShowInputs(!showInputs)}>
-                      {showInputs ? 'Hide Inputs' : 'Show Inputs'}
-                    </button>
-                    {showInputs && (
-                      <>
-                         <Input type="text" placeholder="Type"required />
-                    <select  onChange={handleSelect}>{
-                          option.map(option=>(
-                            <option value ={option.value}>{option.label}</option>
-                          ))
-                        }
-                          </select>
-                     
-                <Input type="number" placeholder="Size" />
-                <Input type="file"multiple accept="image/*"  onChange={handleFileChange} />
-                  <div className="image-previews">
-                    {selectedFiles.map((file, index) => (
-                      <img
-                        key={index}
-                        src={URL.createObjectURL(file)}
-                        alt={`Preview ${index}`}
-                        style={{ width: '100px', margin: '10px' }}
-                      />
-                    ))}
-                  </div>
-                <Input type="text" placeholder="Sale Price" />
-                      </>
-                    )}
-                  </div> 
-                   */}
-     
-       
-        <select value={selectedValue} onChange={handleSelectChange} style={{color:"#03C9D7"}}>
-          <option value="">category</option>
-          <option value="elcetronics">Elcetronics</option>
-          <option value="fashion">Fashion</option>
-          <option value="beauty and fragrance">Beauty And Fragrance</option>
-          
-        </select>
-        
-         
-     
-        {Array.from({ length: inputCount }).map((_, index) => (
-          // <Input key={index} type="text" placeholder={`Input ${index + 1}`} />
-          // {/* select subcat with api*/}
-          //    {/* <select  onChange={handleSelect}>
-          //    {
-          //         subcat.map(subcat=>(
-          //           <option value ={subcat.value}>{subcat.label}</option>
-          //         ))
-          //       }
-                
-          //    </select> */}
-         <>
-          <select value={selectedValue} onChange={handleSelectChange}>
-          <option value="">Sub cat</option>
-          <option value="cat1">Elcetronics</option>
-          <option value="cat2">gaming</option>
-          <option value="cat3 ">personal</option>
-          
-        </select>
-        
-          <select value={selectedValue} onChange={handleSelectChange}>
-          <option value="">Sub cat2</option>
-          <option value="cat12">1</option>
-          <option value="cat22">2</option>
-          <option value="cat32">3</option>
-          
-        </select>
-             <Input type="text" placeholder="Type"required />
-             <Input type="number" placeholder="Quantity in stack"required  />
-             <button>click</button>
-             <select  onChange={handleSelect} > <option>color</option>{
-              
-                  option.map(option=>(
-                    <option value ={option.value}>{option.label}</option>
-                  ))
-                }
-            </select>
-            <label>select size</label>
-            <label>
-              <input type="checkbox" value="36"  checked={selectedOption === 'option1'} onChange={handleChange} />
-              36
-            </label>  
-            <label>
-              <input type="checkbox" value="option2"  checked={selectedOption === 'option2'} onChange={handleChange} />
-              37
-            </label>
-            <label>
-              <input type="checkbox" value="option3"  checked={selectedOption === 'option3'} onChange={handleChange} />
-              38
-            </label>
-            <label>
-              <input type="checkbox" value="option4"  checked={selectedOption === 'option4'} onChange={handleChange} />
-              39
-            </label>
-            <label>
-              <input type="checkbox" value="option5"  checked={selectedOption === 'option5'} onChange={handleChange} />
-              40
-            </label>
-            <Input type="file"multiple accept="image/*"  onChange={handleFileChange} />
-                  <div className="image-previews">
-                    {selectedFiles.map((file, index) => (
-                      <img
-                        key={index}
-                        src={URL.createObjectURL(file)}
-                        alt={`Preview ${index}`}
-                        style={{ width: '100px', margin: '10px' }}
-                      />
-                    ))}
-                  </div>
-                  
-          </>
-         
-        ))}
-      
-   
-                  {/*sub category with api */}
-                  {/* <div>
-      <button onClick={() => setShowInputs(!showInputs)}>
-        {showInputs ? 'Hide Inputs' : 'Show Inputs'}
-      </button>
-      {showInputs && (
-        <div>
-          {inputVisibility.map((isVisible, index) => (
-            isVisible && <input key={index} type="text" placeholder={`Input ${index + 1}`} />
-          ))}
-        </div>
-      )}
-    </div> */}
-                <Input type="multiple" option={category.name} onChange={handleSelect}/>
-                    {/* <select classname="form-select" onChange={handleSelect}>{
-                      option.map(option=>(
-                        <option value ={option.value}>{option.label}</option>
-                      ))
-                    }
-                      </select> */}
+          <FormContainer>
+            <Input type="text" placeholder="Name" required />
+            <Input type="text" placeholder="Description" required />
+            {/* <Input type="text" placeholder="Price" required /> */}
 
-              </FormContainer>
-              <Marginer direction="vertical" margin={10} />
-              <SubmitButton type="submit"><Link to='/Admin'class="link" >ADD</Link></SubmitButton>
-              <Marginer direction="vertical" margin="1em" />
-              {/* <MutedLink href="#">
+
+
+
+
+
+
+            <h1>Select Category</h1>
+            <select onChange={handleCategoryChange}>
+              <option value="">Select Category</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+
+            {selectedCategory && !selectedCategory.is_leaf && (
+              <>
+                <h2>Select Subcategory 1</h2>
+                <select onChange={handleSub1CategoryChange}>
+                  <option value="">Select Sub 1 category</option>
+                  {sub1Categories.map((sub1Category) => (
+                    <option key={sub1Category.id} value={sub1Category.id}>
+                      {sub1Category.name}
+                    </option>
+                  ))}
+                </select>
+              </>
+            )}
+             
+            {selectedSub1Category && selectedSub1Category.is_leaf && (
+              <>
+                <h2>Select type 1</h2>
+                <select onChange={handleType} >
+                  <option value="">Select Type</option>
+                  {type.map((type1) => (
+                    <option key={type1.id} value={type1.id}>
+                      {type1.name}
+                    </option>
+                  ))}
+                </select>
+              </>
+            )}
+            {selectedSub1Category && !selectedSub1Category.is_leaf && (
+              <>
+                <h2>Select Subcategory 2</h2>
+                <select onChange={handleSub2CategoryChange}>
+                  <option value="">Select Sub 2 category</option>
+                  {sub2Categories.map((sub2Category) => (
+                    <option
+                      key={sub2Category.id}
+                      value={sub2Category.id}
+                    >
+                      {sub2Category.name}
+                    </option>
+                  ))}
+                </select>
+              </>
+            )}
+             {selectedSub2Category && !selectedSub2Category.is_leaf && (
+              <>
+                <h2>Select Subcategory 3</h2>
+                <select onChange={handleSub3CategoryChange}>
+                  <option value="">Select Sub 3 category</option>
+                 
+                  {Array.isArray(sub3Categories) && sub3Categories.map((sub3Category) => (
+                    <option
+                      key={sub3Category.id}
+                      value={sub3Category.id}
+                    >
+                      {sub3Category.name}
+                    </option>
+                  ))}
+                </select>
+              </>
+            )}
+            {selectedsub4Category && !selectedsub4Category.is_leaf && (
+              <>
+                <h2>Select Subcategory 4</h2>
+                <select >
+                  <option value="">Select Sub 4 category</option>
+                  { sub4Categories.map((sub4Category) => (
+                    <option
+                      key={sub4Category.id}
+                      value={sub4Category.id}
+                    >
+                      {sub4Category.name}
+                    </option>
+                  ))}
+                </select>
+              </>
+            )}
+            
+            {/* {selectedSub4Category && !selectedSub4Category.is_leaf && (
+              <>
+                <h2>Select Subcategory 4</h2>
+                <select >
+                  <option value="">Select Sub 4 category</option>
+                  {sub5Categories.map((sub4Category) => (
+                    <option
+                      key={sub4Category.id}
+                      value={sub4Category.id}
+                    >
+                      {sub4Category.name}
+                    </option>
+                  ))}
+                </select>
+              </>
+            )} */}
+            {/* {selectedSub3Category && !selectedSub3Category.is_leaf && (
+              <>
+                <h2 >Select Subcategory 4</h2>
+                <select onChange={handleSub4CategoryChange}>
+                  <option value="">Select Sub 4 category</option>
+                  {sub4Categories.map((sub4Category) => (
+                    <option
+                      key={sub4Category.id}
+                      value={sub4Category.id}
+                    >
+                      {sub4Category.name}
+                    </option>
+                  ))}
+                </select>
+              </>
+            )} */}
+            {/* {selectedSub3Category && selectedSub3Category.is_leaf && (
+              <>
+                <h2>Select type 222</h2>
+                <select >
+                  <option value="">Select Sub 4 category</option>
+                  {sub4Categories.map((sub4Category) => (
+                    <option
+                      key={sub4Category.id}
+                      value={sub4Category.id}
+                    >
+                      {sub4Category.name}
+                    </option>
+                  ))}
+                </select>
+              </>
+            )} */}
+            {/* {selectedSubCategory && selectedSubCategory.is_leaf && (
+              <>
+                <h2>Select Type</h2>
+                <select onChange={handleCategoryType1}>
+                  <option value="">Select category Type</option>
+                  {subsubCategories.map((subsubCategories) => (
+                    <option
+                      key={subsubCategories.id}
+                      value={subsubCategories.id}
+                    >
+                      {subsubCategories.name}
+                    </option>
+                  ))}
+                </select>
+              </>
+            )} */}
+
+            {/* <>
+              <Input type="text" placeholder="Type" required />
+            </> */}
+          </FormContainer>
+          <Marginer direction="vertical" margin={10} />
+          <SubmitButton type="submit">
+            <Link to="/Admin" class="link">
+              ADD
+            </Link>
+          </SubmitButton>
+          <Marginer direction="vertical" margin="1em" />
+          {/* <MutedLink href="#">
                 Go Back
                 <BoldLink href="#" >
                   <Link to='/'class="link" >Back</Link>
                 </BoldLink>
               </MutedLink> */}
-            </BoxContainer>
-
-
-      
-       
+        </BoxContainer>
       </div>
     </div>
   );
 };
-
 export default AddProduct;
 
 
 
+// if (selectedCat && selectedCat.is_leaf) {
+//   try {
+//     const response = await fetch(`${API_brand}/${selectedCat.slug}`, {
+//       method: "get",
+//       headers: {
+//         //'Content-Type': 'application/json',
+//         "ngrok-skip-browser-warning": "true",
+//        'Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzI0ODcxODEyLCJpYXQiOjE3MTYyMzE4MTIsImp0aSI6IjRhOTg3ZGFiZWRlNzQ3M2E4MDM0ODAwMWJjMjU5NWI0IiwidXNlcl9pZCI6Mn0.VqSIa4ar6CuNQvWdeT8pRcRvINfmTNyqJVsfB4XZXUI',
 
 
+//       },
+//     });
+//   const data = await response.json();
+//   setBrands(data);
+//     console.log(data); // This will log the entire response object for debugging
+   
+//   } catch (error) {
+//     console.error("Error fetching data:", error);
+//   }
 
-
-
-
-
-
-
-
-
-
-
-
-// import React,{  useState, useEffect, useContext } from 'react';
-// import { MdOutlineCancel } from 'react-icons/md';
-// import { AiOutlinePlus, AiOutlineMinus } from 'react-icons/ai';
-
-// import { useStateContext } from '../contexts/ContextProvider';
-// import { cartData } from '../data/dummy';
-// import { Button } from '.';
-
-
-
-
-// import { BoldLink, BoxContainer, FormContainer,  Input, MutedLink, SubmitButton,} from "./Style";
-// import { Marginer } from "./Style";
-// //import { AccountContext } from "./accountContext";
-// import axios from 'axios';
-// import { Link } from "react-router-dom"
-
-
-// const AddProduct = () => {
-// //const { switchToSignup } = useContext(AccountContext);
-
-//   const [email, setEmail] = useState('');
-//   const [password, setPassword] = useState('');
-//   const handleLogin = async (e) => {
-//     e.preventDefault();
-
-//     try {
-//       const response = await axios.post('/api/login', {
-//         email,
-//         password,
-//       });
-
-//       localStorage.setItem('authToken', response.data.token);
-//       window.location.href = '/dashboard';
-//     }
-//      catch (error) {
-//       console.error(error);
-//       alert('Invalid email or password');
-//     }
-//   };
-//   return (
-//     <BoxContainer classname="col-sum-6">
-//       <FormContainer>
-//         <Input  type="email"
-//           value={email}
-//           onChange={(e) => setEmail(e.target.value)} placeholder="Email" required />
-//         <Input  type="password"
-//           value={password}
-//           onChange={(e) => setPassword(e.target.value)} placeholder="Password" required/>
-//       </FormContainer>
-//       <Marginer direction="vertical" margin={10} />
-//       <MutedLink href="/">Forget your password?</MutedLink>
-//       <Marginer direction="vertical" margin="1.6em" />
-//       <SubmitButton type="submit" ><Link to='/Admin'class="link" >Login</Link></SubmitButton>
-//       <Marginer direction="vertical" margin="1em" />
-//       <MutedLink href="#">
-//         Don't have an accoun?{" "}
-//         <BoldLink href="#" >
-//           Signup
-//         </BoldLink>
-//       </MutedLink>
-//       <MutedLink href="/">
-//        Go Back To Home Page?{" "}
-//         <BoldLink href="/" >
-//           Back
-//         </BoldLink>
-//       </MutedLink>
-//     </BoxContainer>
-// );
+  
 // }
-
-
-// export default AddProduct;
+// {selectedCategories.length > 0 &&
+//   selectedCategories[selectedCategories.length - 1]?.is_leaf && (
+//     <Fragment>
+//       <h2>Select Product Brand</h2>
+//       <select onChange={handleBrandChange}>
+//         <option value="">Select Brand</option>
+//         {brands.map((brand) => (
+//           <option key={brand.id} value={brand.id}>
+//             {brand.name}
+//           </option>
+//         ))}
+//       </select>
+//     </Fragment>
+//   )}

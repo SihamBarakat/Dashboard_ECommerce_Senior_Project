@@ -1,15 +1,17 @@
-import React, { useEffect } from 'react';
-import { AiOutlineMenu } from 'react-icons/ai';
-import { FiShoppingCart } from 'react-icons/fi';
+import React, { useEffect } from "react";
+import { AiOutlineMenu } from "react-icons/ai";
+import { FiShoppingCart } from "react-icons/fi";
 import { RiChat1Line } from "react-icons/ri";
-import { RiNotification3Line } from 'react-icons/ri';
-import { MdKeyboardArrowDown } from 'react-icons/md';
-import { TooltipComponent } from '@syncfusion/ej2-react-popups';
-import { FaSearch } from "react-icons/fa";
-import avatar from '../data/avatar.jpg';
-import { Cart, Chat,Search, UserProfile } from '../components';
-import { useStateContext } from '../contexts/ContextProvider';
+import { RiNotification3Line } from "react-icons/ri";
+import { MdKeyboardArrowDown } from "react-icons/md";
+import { TooltipComponent } from "@syncfusion/ej2-react-popups";
+import { FaSearch, FaFilter } from "react-icons/fa";
+import avatar from "../data/avatar.jpg";
+import { Cart, Chat, Search, UserProfile } from "../components";
+import { useStateContext } from "../contexts/ContextProvider";
+import { CgProfile } from "react-icons/cg";
 
+import { Link, useNavigate } from "react-router-dom";
 const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
   <TooltipComponent content={title} position="BottomCenter">
     <button
@@ -28,16 +30,24 @@ const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
 );
 
 const NavbarAdmin = () => {
-  const { currentColor, activeMenu, setActiveMenu, handleClick, isClicked, setScreenSize, screenSize } = useStateContext();
-
+  const {
+    currentColor,
+    activeMenu,
+    setActiveMenu,
+    handleClick,
+    isClicked,
+    setScreenSize,
+    screenSize,
+  } = useStateContext();
+  const navigate = useNavigate();
   useEffect(() => {
     const handleResize = () => setScreenSize(window.innerWidth);
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
 
     handleResize();
 
-    return () => window.removeEventListener('resize', handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
@@ -47,41 +57,56 @@ const NavbarAdmin = () => {
       setActiveMenu(true);
     }
   }, [screenSize]);
-
+  const handleClick2 = (action) => {
+    if (action === "filter") {
+      navigate("/filter"); // Navigate to the add page
+    }
+    // Handle other actions if necessary
+  };
   const handleActiveMenu = () => setActiveMenu(!activeMenu);
 
   return (
     <div className="flex justify-between p-2 md:ml-6 md:mr-6 relative">
-
-      <NavButton title="Menu" customFunc={handleActiveMenu} color={currentColor} icon={<AiOutlineMenu />} />
+      <NavButton
+        title="Menu"
+        customFunc={handleActiveMenu}
+        color={currentColor}
+        icon={<AiOutlineMenu />}
+      />
       <div className="flex">
        
-   
-        <NavButton title="Search" customFunc={() => handleClick('search')} color={currentColor} icon={<FaSearch />} />
-        <TooltipComponent content="Profile" position="BottomCenter">
+        {/* <NavButton
+          title="Search"
+          customFunc={() => handleClick("search")}
+          color={currentColor}
+          icon={<FaSearch />}
+        /> */}
+        {/* <NavButton
+          title="Profile"
+          customFunc={() => handleClick("profile")}
+          color={currentColor}
+          icon={<CgProfile />}
+        /> */}
+        {/* <TooltipComponent content="Profile" position="BottomCenter" icon={<CgProfile/>}>
           <div
             className="flex items-center gap-2 cursor-pointer p-1 hover:bg-light-gray rounded-lg"
             onClick={() => handleClick('userProfile')}
           >
-            <img
-              className="rounded-full w-8 h-8"
-              src={avatar}
-              alt="user-profile"
-            />
+         
             <p>
-              <span className="text-gray-400 text-14">Hi,</span>{' '}
+             
               <span className="text-gray-400 font-bold ml-1 text-14">
-                Michael
+                Profile
               </span>
             </p>
             <MdKeyboardArrowDown className="text-gray-400 text-14" />
           </div>
-        </TooltipComponent>
+        </TooltipComponent> */}
 
        
-        {isClicked.search && (<Search />)}
-        
-        {isClicked.userProfile && (<UserProfile />)}
+        {isClicked.search && <Search />}
+
+        {isClicked.Profile && <UserProfile />}
       </div>
     </div>
   );

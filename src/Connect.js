@@ -1,35 +1,29 @@
-// all customers
-// app.get('/api/customers',function(req,res){
-//     return res.json({result:data,count:data.length});
-
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 
-// });
-// // add customer
-// app.post('/api/insert',function(req,res){
-//     return res.json({result:data,count:data.length});
+const baseURL ="https://donkey-casual-python.ngrok-free.app";
+const API_URL =
+"";
 
-// });
-// //remove
-// app.delete('/api/customers/:id',function(req,res){
-//     return res.json({result:data,count:data.length});
-
-// });
-// //update
-// app.put('/api/customers/:id',function(req,res){
-//     return res.json({result:data,count:data.length});
-
-// });
-// app.listen(8000);
-/////////////////////////////////////////////////////////
-const baseURL ="https://6e8b-37-48-151-120.ngrok-free.app";
 //get 
-export function getCustomers(){
-    return fetch(baseURL+"/customers").then(res=>res.json());
+//const [categoriess, setCategoriess] = useState([]);
+export async function  getCustomers (){
+
+   
 }
+
+export function getCategories(){
+    return fetch(baseURL+"/catalog/category", {
+        method: "get",
+        headers: {
+          //'Content-Type': 'application/json',
+          "ngrok-skip-browser-warning": "true",
+        },
+      });
+};
 //add
 export function addCustomers(customer){
-    return fetch(baseURL+"/Users/admin/Customers",{
+    return fetch(baseURL+"/catalog/category",{
         method:"post",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({
@@ -60,13 +54,23 @@ export function deleteCustomers(primaryKey){
     });
 }
 export async function getSuppliers(){
+  
+    // try {
+    //     const response = await axios.post('http://localhost:3000/post', { key: 'value' });
+    //     setData(response.data);
+    //   } catch (err) {
+    //     setError(err.message);
+    //   }
     const selectedChatId = localStorage.getItem("selected-chat-id");
     const headers={
+        "Content-Type":"application/json",
+
 
     };
- const response= await axios.post(`https://6e8b-37-48-151-120.ngrok-free.app/Users/admin/suppliers`,data)
+ const response= await axios.post(`https://f887-37-48-144-11.ngrok-free.app//Users/admin/suppliers`,{headers})
 
     // return fetch(baseURL+"/Users/admin/suppliers").then(res=>res)
+    console.log(response);
 };
 
 export function addSuppliers(customer){
@@ -80,10 +84,19 @@ export function addSuppliers(customer){
         return data;
     });
 }
-export function getCategories(){
-    return fetch(baseURL+"/Users/admin/suppliers").then(res=>res)
-};
 
+
+export function addCategories(category){
+    return fetch('https://a006-37-48-149-174.ngrok-free.app/catalog/category/',{
+        method:"post",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+            value:category
+        })
+    }).then(data=>{
+        return data;
+    });
+}
 
 
 
