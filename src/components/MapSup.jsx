@@ -153,7 +153,7 @@ const MapSup = ({ lat, lng }) => {
   return (
     <>
       <BoxContainer>
-        <LoadScript googleMapsApiKey="AIzaSyCjU2Z3rFcn8kC_EjC3pSwhLLAro2ZngpI">
+        <LoadScript googleMapsApiKey="">
           <GoogleMap
             mapContainerStyle={containerStyle}
             center={center}
